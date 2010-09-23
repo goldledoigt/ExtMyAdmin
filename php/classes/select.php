@@ -16,11 +16,11 @@ function iexplode($separator, $string, $limit = false ) {
 
 
 class select {
-	
+
 	public $query;
 	public $fields;
 	public $tables;
-	
+
 	function __construct() {
 		$this->db = new mysql();
 	}
@@ -89,7 +89,7 @@ class select {
 		}
 		return $results;
 	}
-	
+
 }
 
 function dumpArray($array) {
@@ -99,7 +99,7 @@ function dumpArray($array) {
 		print "------------------\n";
 	}
 }
-/*
+
 header('Content-Type:text/plain');
 $query = "SELECT DISTINCT toto, titi as tutu, paf pof FROM tata, puf pouf WHERE id = 3 AND user LIKE '%jean%'";
 print $query."\n";
@@ -122,7 +122,7 @@ print "\nTABLES:\n";
 dumpArray($s->tables);
 print "\nFIELDS:\n";
 dumpArray($s->fields);
-*/
+
 
 
 ?>
