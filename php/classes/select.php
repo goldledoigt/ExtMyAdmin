@@ -25,14 +25,24 @@ class select {
 		$this->db = new mysql();
 	}
 
-	function exec($db, $query) {
+	function exec($db, $query, $parseQuery = false) {
 		$rows = array();
 		$this->query = $query;
-		$this->parseQuery();
+		if ($parseQuery) $this->parseQuery();
 		$this->db->select_db($db);
-		if ($res = $this->db->query($query)) {
-			while ($row = $this->db->getAssoc($res)) {
-				$rows[] = $row;
+		if (stristr($query, 'INSERT INTO ') !== false) {
+			$res = $this->db->insert($query);
+		} else {
+			$res = $this->db->query($query);
+		}
+		
+		if ($res) {
+			if (is_resource($res)) {
+				while ($row = $this->db->getAssoc($res)) {
+					$rows[] = $row;
+				}
+			} else {
+				$rows = $res;
 			}
 		}
 		return $rows;

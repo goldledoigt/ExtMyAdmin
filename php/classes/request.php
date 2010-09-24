@@ -31,10 +31,10 @@ class request {
 		if ($this->error) {
 			$json['msg'] = $this->error['msg'];
 		} else {
-			// $instance = new $this->params->action($this->params->data[0]);
-			// 			$json['result'] = $instance->{$this->params->method}();
-			$instance = new grid();
-			$json['result'] = $instance->read();
+			$instance = new $this->params->action($this->params->data);
+			$json['result'] = $instance->{$this->params->method}();
+			// $instance = new grid($this->params->data);
+			// $json['result'] = $instance->read();
 		}
 		return json_encode($json);
 	}

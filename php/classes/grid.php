@@ -3,23 +3,50 @@
 class grid extends table {
 
 	public $columns;
+	public $rows;
+	public $readConfig;
 
-	function __construct($config=false) {
-		parent::__construct("client"/*$config->table*/);
+	function __construct($config) {
+		if (is_object($config[0])) {
+			$name = $config[0]->table;
+			$this->rows = $config[0]->rows;
+		} else {
+			$name = array_shift($config);
+			$this->readConfig = $config;
+		}
+		parent::__construct($name);
+	}
+
+	function destroy() {
+		parent::deleteData($this->rows);
+		// $result['rows'] = parent::getDataAt($this->rows->id);
+		$result['success'] = true;
+		return $result;
+	}
+
+	function create() {
+		$id = parent::insertData($this->rows);
+		$result['rows'] = parent::getDataAt($id);
+		$result['success'] = true;
+		return $result;
+	}
+
+	function update() {
+		parent::updateData($this->rows);
+		$result['rows'] = parent::getDataAt($this->rows->id);
+		$result['success'] = true;
+		return $result;
 	}
 
 	function read() {
 		$result = array();
+		parent::setConfig($this->readConfig);
 		$result['success'] = true;
-		$result['rows'] = $this->getData();
+		$result['rows'] = parent::getData();
 		$result['columns'] = $this->getColumns();
-		$result['count'] = $this->getCount();
+		$result['count'] = parent::getCount();
 		$result['metaData'] = $this->getMetaData();
 		return $result;
-	}
-
-	function getData() {
-		return parent::getData();
 	}
 
 	function getColumns() {
@@ -29,12 +56,9 @@ class grid extends table {
 		for ($i = 0, $l = sizeof($c); $i < $l; $i++) {
 			$columns[$i]['header'] = $c[$i]['COLUMN_NAME'];
 			$columns[$i]['dataIndex'] = $c[$i]['COLUMN_NAME'];
+			$columns[$i]['sortable'] = true;
 		}
 		return $columns;
-	}
-
-	function getCount() {
-		return parent::getCount();
 	}
 
 	function getMetaData() {
@@ -43,6 +67,7 @@ class grid extends table {
 		$meta['idProperty'] = 'id';
 		$meta['totalProperty'] = 'count';
 		$meta['successProperty'] = 'success';
+		$meta['sortInfo'] = parent::getSortInfo();
 		// $meta['messageProperty'] = 'log';
 		$meta['fields'] = $this->getFields();
 		return $meta;
