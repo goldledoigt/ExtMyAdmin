@@ -1,4 +1,4 @@
-Ext.ux.EditorGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
+Ext.ux.DirectMetaGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
 	limit:10
 
@@ -13,28 +13,17 @@ Ext.ux.EditorGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
         this.store = new Ext.data.DirectStore({
     		fields:[]
     		,autoSave:true
-            // ,batchSave:false
-            // ,prettyUrls:false
     		,remoteSort: true
     		,baseParams:{table:"client"}
-          	,sortInfo:{field:"id", direction:"ASC"}
+          	,sortInfo:{field:"", direction:""}
           	,writer:new Ext.data.JsonWriter({
-                // returnJson:false
                 encode:false
                 ,encodeDelete:true
-                // ,writeAllFields:false
           	})
-          	// PROXY: Ext.data.DirectProxy (paramOrder,paramsAsHash,directFn,api)
+          	// proxy config
           	,paramsAsHash:false
             ,paramOrder:["table", "start", "limit", "sort", "dir"]
-            // ,paramsNames:{start:'start', limit:'limit', sort:'sort', dir:'dir'}
-          	,idProperty:"id"
-          	,api:{
-            	read:grid.read
-            	,create:grid.create
-            	,update:grid.update
-            	,destroy:grid.destroy
-          	}
+          	,api:this.api
         });
 
         this.bbar = new Ext.PagingToolbar({
@@ -50,32 +39,25 @@ Ext.ux.EditorGridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
     		    text:"Remove"
     		    ,scope:this
     		    ,handler:this.removeRows
-    		}, "->"]
+    		}, "->", "-"]
         });
 
-        Ext.ux.EditorGridPanel.superclass.initComponent.apply( this, arguments );
+        Ext.ux.DirectMetaGrid.superclass.initComponent.apply( this, arguments );
 
         this.on("afterrender", function() {
              this.store.load({ params: { start: 0, limit:this.limit } })
         });
-/*
-        this.on("afteredit", function() {
-            console.log("afteredit", arguments);
-            this.store.save();
-        }, this);
-*/
+
     }
 
 	,onDataChange:function() {
 		var columns = this.ds.reader.jsonData.columns;
 		Ext.each(columns, this.grid.setColumnEditor, this.grid);
-        // columns.unshift(this.grid.checkboxSelModel);
         this.cm.setConfig(columns);
         this.syncFocusEl(0);
 	}
 
     ,setColumnEditor:function(column) {
-        // console.log("col", column);
         column.editor = new Ext.form.TextField();
     }
 

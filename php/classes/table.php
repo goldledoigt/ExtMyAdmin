@@ -4,11 +4,12 @@ class table {
 
 	public $name;
 	public $select;
-	public $columns;
+	public $columns = false;
 	public $start;
 	public $limit;
-	public $sort;
-	public $dir;
+	public $sort = false;
+	public $dir = false;
+	public $primaryKey = false;
 
 	function __construct($name) {
 		$this->name = $name;
@@ -23,22 +24,25 @@ class table {
 	}
 
 	function getData($index=false) {
-		$query = "SELECT * FROM $this->name ORDER BY $this->sort $this->dir LIMIT $this->start, $this->limit";
+		$order = $this->getSortInfo();
+		$query = "SELECT * FROM $this->name ORDER BY ".$order['field']." ".$order['direction']." LIMIT $this->start, $this->limit";
 		$rows = $this->select->exec('accelrh', $query);
 		return $rows;
 	}
 
-	function getDataAt($index) {
-		$where = "WHERE id = $index";
+	function getDataAt($field, $index) {
+		$where = "WHERE $field = $index";
 		$query = "SELECT * FROM $this->name WHERE id = $index";
 		$rows = $this->select->exec('accelrh', $query);
 		return $rows[0];
 	}
 
 	function getColumns() {
-		$query = "SELECT * FROM COLUMNS WHERE TABLE_NAME = '$this->name'";
-		$rows = $this->select->exec('information_schema', $query);
-		return $rows;
+		if ($this->columns === false) {
+			$query = "SELECT * FROM COLUMNS WHERE TABLE_NAME = '$this->name'";
+			$this->columns = $this->select->exec('information_schema', $query);
+		}
+		return $this->columns;
 	}
 
 	function getCount() {
@@ -48,18 +52,29 @@ class table {
 	}
 
 	function getSortInfo() {
-		return array(
-			'field'=>$this->sort
-			,'direction'=>$this->dir
-		);
+		$dir = ($this->dir === 'ASC' or $this->dir === 'DESC') ? $this->dir : 'ASC';
+		$field = ($this->sort and strlen($this->sort)) ? $this->sort : $this->getPrimaryKey();
+		return array('field' => $field, 'direction' => $dir);
+	}
+
+	function getPrimaryKey() {
+		if ($this->columns === false) $this->getColumns();
+		for ($i = 0, $l = sizeof($this->columns); $i < $l; $i++) {
+			$c =& $this->columns[$i];
+			if ($c['COLUMN_KEY'] === 'PRI') {
+				$this->primaryKey = $c['COLUMN_NAME'];
+			}
+		}
+		return $this->primaryKey;
 	}
 
 	function updateData($data) {
 		$set = array();
+		$pk = $this->getPrimaryKey();
 		foreach ($data as $key => $value)
-			if ($key !== 'id') $set[] = "$key = '$value'";
+			if ($key !== $pk) $set[] = "$key = '$value'";
 		$set = implode(", ", $set);
-		$query = "UPDATE $this->name SET $set WHERE id = $data->id";
+		$query = "UPDATE $this->name SET $set WHERE $pk = ".$data->{$pk};
 		$this->select->exec('accelrh', $query);
 	}
 
@@ -74,7 +89,8 @@ class table {
 	}
 
 	function deleteData($data) {
-		$query = "DELETE FROM $this->name WHERE id = $data->id";
+		$pk = $this->getPrimaryKey();
+		$query = "DELETE FROM $this->name WHERE $pk = ".$data->{$pk};
 		$this->select->exec('accelrh', $query);
 	}
 

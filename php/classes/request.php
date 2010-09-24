@@ -21,7 +21,7 @@ class request {
 		}
 	}
 
-	function getJson() {
+	function getResult() {
 
 		$json = array();
 		$json['action'] = $this->params->action;
@@ -36,7 +36,8 @@ class request {
 			// $instance = new grid($this->params->data);
 			// $json['result'] = $instance->read();
 		}
-		return json_encode($json);
+		// return json_encode($json);
+		return $json;
 	}
 
 	function error($msg) {

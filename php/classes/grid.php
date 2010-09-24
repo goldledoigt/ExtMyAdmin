@@ -2,7 +2,6 @@
 
 class grid extends table {
 
-	public $columns;
 	public $rows;
 	public $readConfig;
 
@@ -19,42 +18,48 @@ class grid extends table {
 
 	function destroy() {
 		parent::deleteData($this->rows);
-		// $result['rows'] = parent::getDataAt($this->rows->id);
+		$result['rows'] = array(key($this->rows) => $this->rows->{key($this->rows)});
 		$result['success'] = true;
 		return $result;
 	}
 
 	function create() {
-		$id = parent::insertData($this->rows);
-		$result['rows'] = parent::getDataAt($id);
+		$key = parent::insertData($this->rows);
+		$result['rows'] = parent::getDataAt($this->getPrimaryKey(), $key);
 		$result['success'] = true;
 		return $result;
 	}
 
 	function update() {
 		parent::updateData($this->rows);
-		$result['rows'] = parent::getDataAt($this->rows->id);
+		$pk = $this->getPrimaryKey();
+		$result['rows'] = parent::getDataAt($pk, $this->rows->{$pk});
 		$result['success'] = true;
 		return $result;
 	}
 
 	function read() {
 		$result = array();
-		parent::setConfig($this->readConfig);
-		$result['success'] = true;
-		$result['rows'] = parent::getData();
 		$result['columns'] = $this->getColumns();
+		parent::setConfig($this->readConfig);
+		$result['rows'] = parent::getData();
 		$result['count'] = parent::getCount();
 		$result['metaData'] = $this->getMetaData();
+		$result['success'] = true;
 		return $result;
 	}
 
 	function getColumns() {
-		$coluns = array();
-		$this->columns = parent::getColumns();
+		$columns = array();
+		parent::getColumns();
+		parent::getPrimaryKey();
 		$c =& $this->columns;
 		for ($i = 0, $l = sizeof($c); $i < $l; $i++) {
-			$columns[$i]['header'] = $c[$i]['COLUMN_NAME'];
+			$style = '';
+			if ($c[$i]['COLUMN_NAME'] === $this->primaryKey) {
+				$style = 'style="color:red"';
+			}
+			$columns[$i]['header'] = "<b $style>".$c[$i]['COLUMN_NAME'].'</b><br />'.$c[$i]['COLUMN_TYPE'];
 			$columns[$i]['dataIndex'] = $c[$i]['COLUMN_NAME'];
 			$columns[$i]['sortable'] = true;
 		}
@@ -64,7 +69,7 @@ class grid extends table {
 	function getMetaData() {
 		$meta = array();
 		$meta['root'] = 'rows';
-		$meta['idProperty'] = 'id';
+		$meta['idProperty'] = $this->getPrimaryKey();
 		$meta['totalProperty'] = 'count';
 		$meta['successProperty'] = 'success';
 		$meta['sortInfo'] = parent::getSortInfo();

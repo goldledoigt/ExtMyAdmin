@@ -1,4 +1,5 @@
 <?php
+header('Content-Type:text/javascript');
 
 require_once '../../settings.php';
 
@@ -7,25 +8,16 @@ function __autoload($class_name) {
     require_once $DOC_ROOT. '/php/classes/' . $class_name . '.php';
 }
 
-header('Content-Type:text/javascript');
-$request = json_decode(file_get_contents( 'php://input' ));
-$r = new request($request);
-print $r->getJson();
+$result = array();
+$requests = json_decode(file_get_contents( 'php://input' ));
 
-/*
+if (!is_array($requests)) $requests = array($requests);
 
-GRID READ: grid, read, table, [sort, dir, limit, start]
+foreach ($requests as $request) {
+	$r = new request($request);
+	$result[] = $r->getResult();
+}
 
-	my->getResult();
-		grid->getData();
-			table->select();
-				select->parseQuery();
-				select->exec();
-		grid->getColumns();
-			table->getFields()
-			grid->getEditor();
-		grid->getCount();
-
-*/
+print json_encode($result);
 
 ?>

@@ -16,7 +16,8 @@
 				url:"php/controller/index.php"
 				,type:"remoting"
 				,actions:{
-					grid:[
+					tree:[{name:"read", len:2}]
+					,grid:[
 						{name:"read", len:5}
 						,{name:"update", len:1}
 						,{name:"create", len:1}
@@ -24,18 +25,81 @@
 					]
 				}
 			};
-			Ext.Direct.addProvider(API);
+
+			Ext.Direct.addProvider(API);			
 		</script>
 
 		<script type="text/javascript" src="static/js/Ext.ux.DirectMetaGrid.js"></script>
+		<script type="text/javascript" src="static/js/Ext.ux.DirectLogGrid.js"></script>
 
 		<script>
 			Ext.onReady( function() {
-			    new Ext.ux.EditorGridPanel({
+
+			   var g = new Ext.ux.DirectMetaGrid({
+					region:"center"
+					,margins:"4 4 4 0"
+					,api:{
+		            	read:grid.read
+		            	,create:grid.create
+		            	,update:grid.update
+		            	,destroy:grid.destroy
+		          	}
+				});
+
+				var t = new Ext.tree.TreePanel({
+					region:"west",
+					split:true,
+					margins:"4 0 4 4",
+			        width:250,
+			        autoScroll:true,
+					visibleRoot:false,
+			        root:new Ext.tree.AsyncTreeNode({
+			            id:"host"
+						,type:"database"
+			            ,text:"Host"
+						,expanded:true
+			        }),
+			        loader:new Ext.tree.TreeLoader({
+			            directFn:tree.read
+						,paramOrder:["node", "type"]
+						,listeners:{
+							beforeload:function(loader, node) {
+								loader.baseParams.type = node.attributes.type;
+							}
+						}
+			        })
+			    });
+
+
+				new Ext.Viewport({
+					layout:"border"
+					,items:[g, t]
+				})
+
+
+/*
+			    new Ext.ux.DirectLogGrid({
 					height:200
 					,width:500
 				}).render(document.body);
+*/
+
+/*
+				dgrid.store.on("beforeload", function() {
+					console.info("beforeload", arguments);
+				});
+				dgrid.store.on("load", function() {
+					console.info("load", arguments);
+				});
+				dgrid.store.on("write", function() {
+					console.info("write", arguments);
+				});
+				dgrid.store.on("exception", function() {
+					console.info("exception", arguments);
+				});
+*/
 			});
+
 		</script>
 	</body>
 
