@@ -68,12 +68,25 @@
 							}
 						}
 			        })
+					,listeners:{
+						click:function(node) {
+							if (node.attributes.type === "table") {
+								g.store.baseParams.table = node.id;
+								g.store.load({params:{start:0, limit:g.limit}});
+							}
+						}
+					}
 			    });
 
 
 				new Ext.Viewport({
 					layout:"border"
 					,items:[g, t]
+					,listeners:{
+						afterrender:function() {
+							
+						}
+					}
 				})
 
 

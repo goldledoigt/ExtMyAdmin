@@ -1,6 +1,7 @@
 Ext.ux.DirectMetaGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
 	limit:10
+	,loadMask:true
 
     ,initComponent: function() {
 
@@ -43,10 +44,6 @@ Ext.ux.DirectMetaGrid = Ext.extend(Ext.grid.EditorGridPanel, {
         });
 
         Ext.ux.DirectMetaGrid.superclass.initComponent.apply( this, arguments );
-
-        this.on("afterrender", function() {
-             this.store.load({ params: { start: 0, limit:this.limit } })
-        });
 
     }
 

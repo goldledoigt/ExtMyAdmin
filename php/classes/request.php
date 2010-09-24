@@ -33,10 +33,7 @@ class request {
 		} else {
 			$instance = new $this->params->action($this->params->data);
 			$json['result'] = $instance->{$this->params->method}();
-			// $instance = new grid($this->params->data);
-			// $json['result'] = $instance->read();
 		}
-		// return json_encode($json);
 		return $json;
 	}
 
@@ -45,13 +42,5 @@ class request {
 	}
 
 }
-/*
-class table { function getData() {return array();} }
 
-$_REQUEST = array('action' => 'table', 'method' => 'getData', 'data' => '{toto:42}', 'tid' => 2, 'type' => 'rpc');
-
-header('Content-Type:text/plain');
-$r = new request($_REQUEST);
-print $r->getJson();
-*/
 ?>
