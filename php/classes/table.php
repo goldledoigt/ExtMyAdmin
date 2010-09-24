@@ -6,23 +6,23 @@ class table {
 	public $select;
 	public $columns;
 
-	function __construct($config) {
-		$this->name = $config[0]->name;
+	function __construct($name) {
+		$this->name = $name;
 		$this->select = new select();
 		// $this->columns = $this->getColumns();
 	}
 
-	function read() {
-		$result = array();
-		$result['data'] = $this->getData();
-		$result['columns'] = $this->getColumns();
-		$result['count'] = $this->getCount();
-		$result['metaData'] = $this->getMetaData();
-		return $result;
-	}
+	// function read() {
+	// 	$result = array();
+	// 	$result['data'] = $this->getData();
+	// 	$result['columns'] = $this->getColumns();
+	// 	$result['count'] = $this->getCount();
+	// 	$result['metaData'] = $this->getMetaData();
+	// 	return $result;
+	// }
 
 	function getData() {
-		$query = "SELECT * FROM $this->name LIMIT 0, 10";
+		$query = "SELECT * FROM $this->name LIMIT 0, 30";
 		$rows = $this->select->exec('accelrh', $query);
 		return $rows;
 	}
@@ -39,20 +39,20 @@ class table {
 		return $rows[0]['count'];
 	}
 
-	function getFields() {
-		return $this->getColumns();
-	}
+	// function getFields() {
+	// 	return $this->getColumns();
+	// }
 
-	function getMetaData() {
-		$meta = array();
-		$meta['root'] = 'data';
-		$meta['idProperty'] = 'id';
-		$meta['totalProperty'] = 'count';
-		$meta['successProperty'] = 'success';
-		$meta['messageProperty'] = 'log';
-		$meta['fields'] = $this->getFields();
-		return $meta;
-	}
+	// function getMetaData() {
+	// 	$meta = array();
+	// 	$meta['root'] = 'data';
+	// 	$meta['idProperty'] = 'id';
+	// 	$meta['totalProperty'] = 'count';
+	// 	$meta['successProperty'] = 'success';
+	// 	$meta['messageProperty'] = 'log';
+	// 	$meta['fields'] = $this->getFields();
+	// 	return $meta;
+	// }
 
 }
 

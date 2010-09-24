@@ -19,7 +19,7 @@
 				url:"php/controller/index.php"
 				,type:"remoting"
 				,actions:{
-					table:[
+					grid:[
 						{name:"read", len:2}
 						,{name:"update", len:2}
 						,{name:"create", len:2}
@@ -30,22 +30,40 @@
 
 			Ext.Direct.addProvider(ExtMyAdmin.API);
 
-			ExtMyAdmin.GridPanel = Ext.extend(Ext.grid.EditorGridPanel, {
+			ExtMyAdmin.GridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 			    initComponent:function() {
 
-			        this.columns = [];
+			        this.columns = [{header:"id", dataIndex:"id"}];
+
+					this.viewConfig = {onDataChange:this.onDataChange};
 
 			        this.store = new Ext.data.DirectStore({
-			            fields:[]
+			            fields:["id"]
+						,root:"result.rows"
+						// ,idProperty:"id"
 						,autoLoad:true
-						,baseParams:{name:"client"}
+						// ,baseParams:{table:"client"}
+						,directFn:grid.read
+						/*
 						,api:{
-							read:table.read
-							,create:table.create
-							,update:table.update
-							,destroy:table.destroy
+							read:grid.read
+							,create:grid.create
+							,update:grid.update
+							,destroy:grid.destroy
 						}
+						*/
+						// ,paramsAsHash:false
+						/*
+						,paramOrder: ['sort','dir','start','limit', 'table']
+						,paramNames:{
+							start : 'start'
+							,limit : 'limit'
+							,sort : 'sort'
+							,dir : 'dir'
+							,table:"table"
+						}
+						*/
 						/*
 			            ,proxy:new Ext.data.HttpProxy({
 			                api:{
@@ -56,15 +74,23 @@
 			                }
 			            })
 						*/
+						/*
 			            ,writer:new Ext.data.JsonWriter({
 			                encode: true,
 			                writeAllFields: false
 			            })
+						*/
 			            ,listeners:{
 			                scope:this
+							,beforeload:console.log
+							,loadexception:console.log
+							,load:console.log
+			                // ,exception:this.onException
+			                // ,load:this.onLoad
+			                ,write:this.onWrite
 			            }
 			        });
-
+/*
 			        this.bbar = new Ext.PagingToolbar({
 			            store:this.store
 			            ,displayInfo:true
@@ -73,16 +99,42 @@
 			            ,items:[{
 			            }, "->", "-"]
 			        });
-
+*/
 			        ExtMyAdmin.GridPanel.superclass.initComponent.apply(this, arguments);
+			    }
+			
+				,onDataChange:function() { // scope is on grid.getView()
+			        var columns = this.ds.reader.jsonData.columns;
+					console.log("onDataChange", columns);
+			        columns.unshift(this.grid.checkboxSelModel);
+			        this.cm.setConfig(columns);
+			        this.syncFocusEl(0);
+			    }
+
+				,onWrite:function(store, action, result, resp, record) {
+					console.log("write", arguments);
+			    }
+
+			    ,onException:function(proxy, type, action, options, resp, arg) {
+					console.log("exception", arguments);
+			    }
+
+			    ,onLoad:function(store, records, options) {
+					console.log("load", arguments);
 			    }
 
 			});
+
+			Ext.Direct.on( 'exception', function(e) { console.log("xxx"); } );
 			
+			Ext.data.DataProxy.on('beforload', function(proxy, action) {
+			    console.log('beforeload: ', action);
+			});
 		
 			Ext.onReady(function() {
 				new ExtMyAdmin.GridPanel({
-					
+					height:200
+					,width:500
 				}).render(document.body);
 			});
 		</script>
