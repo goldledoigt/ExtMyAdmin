@@ -6,12 +6,12 @@ class request {
 	public $params;
 	public $error = array();
 
-	function __construct($request) {
+	function __construct($request=false) {
 		if (
-			isset($request)/* and sizeof($request) === 5*/
+			isset($request)
 			and isset($request->action) and strlen($request->action)
 			and isset($request->method) and strlen($request->method)
-			and isset($request->data) and sizeof($request->data)
+			and isset($request->data) and is_array($request->data)
 			and isset($request->tid) and is_numeric($request->tid)
 			and isset($request->type) and strlen($request->type)
 		) {
@@ -31,8 +31,10 @@ class request {
 		if ($this->error) {
 			$json['msg'] = $this->error['msg'];
 		} else {
-			$instance = new $this->params->action($this->params->data);
-			$json['result'] = $instance->{$this->params->method}();
+			// $instance = new $this->params->action($this->params->data[0]);
+			// 			$json['result'] = $instance->{$this->params->method}();
+			$instance = new grid();
+			$json['result'] = $instance->read();
 		}
 		return json_encode($json);
 	}

@@ -1,5 +1,4 @@
 <?php
-// $DOC_ROOT = $_SERVER['DOCUMENT_ROOT'].'/project/ExtMyAdmin';
 
 require_once '../../settings.php';
 
@@ -8,7 +7,7 @@ function __autoload($class_name) {
     require_once $DOC_ROOT. '/php/classes/' . $class_name . '.php';
 }
 
-header('Content-Type:text/plain');
+header('Content-Type:text/javascript');
 $request = json_decode(file_get_contents( 'php://input' ));
 $r = new request($request);
 print $r->getJson();
