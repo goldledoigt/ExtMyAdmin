@@ -4,10 +4,51 @@ class tree {
 
 	public $node;
 	public $type;
+	public $schema;
 
 	function __construct($config) {
 		$this->node = $config[0];
 		$this->type = $config[1];
+		if (isset($config[2])) $this->schema = $config[2];
+		if (isset($config[3])) $this->new = $config[3];
+	}
+
+	function update() {
+		if ($this->type === 'table')
+			return $this->renameTable();
+	}
+
+	function renameTable() {
+		return table::rename($this->node, $this->new);
+	}
+
+	function destroy() {
+		if ($this->type === 'schema')
+			return $this->destroySchema();
+	}
+
+	function destroySchema() {
+		database::destroySchema($this->node);
+		$node = array();
+		$node['success'] = true;
+		return $node;
+	}
+
+	function create() {
+		if ($this->type === 'schema')
+			return $this->createSchema();
+		// else if ($this->type === 'table')
+		// 	return $this->createTable();
+	}
+
+	function createSchema() {
+		database::createSchema($this->node);
+		$node = array();
+		$node['iconCls'] = "icon-node-schema";
+		$node['id'] = $this->node;
+		$node['text'] = $this->node;
+		$node['type'] = 'schema';
+		return $node;
 	}
 
 	function read() {
@@ -53,7 +94,7 @@ class tree {
 
 	function getColumns() {
 		$nodes = array();
-		$t = new table($this->node);
+		$t = new table($this->schema, $this->node);
 		$columns = $t->getColumns();
 		for ($i = 0, $l = sizeof($columns); $i < $l; $i++) {
 			$nodes[$i] = array(

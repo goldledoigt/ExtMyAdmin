@@ -2,6 +2,8 @@ Ext.ux.DirectMetaGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
 	limit:10
 	,loadMask:true
+	,columnLines:true
+	,enableHdMenu:false
 
     ,initComponent: function() {
 
@@ -9,13 +11,16 @@ Ext.ux.DirectMetaGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
     	this.viewConfig = {onDataChange:this.onDataChange};
 
-        this.selModel = new Ext.grid.RowSelectionModel();
+        this.selModel = new Ext.grid.RowSelectionModel({
+            moveEditorOnEnter:false
+            ,singleSelect:true
+        });
 
         this.store = new Ext.data.DirectStore({
     		fields:[]
     		,autoSave:true
     		,remoteSort: true
-    		,baseParams:{table:"client"}
+    		,baseParams:{schema:"accelrh", table:"client"}
           	,sortInfo:{field:"", direction:""}
           	,writer:new Ext.data.JsonWriter({
                 encode:false
@@ -23,10 +28,10 @@ Ext.ux.DirectMetaGrid = Ext.extend(Ext.grid.EditorGridPanel, {
           	})
           	// proxy config
           	,paramsAsHash:false
-            ,paramOrder:["table", "start", "limit", "sort", "dir"]
+            ,paramOrder:this.paramOrder
           	,api:this.api
         });
-
+/*
         this.bbar = new Ext.PagingToolbar({
     		displayInfo:true
     		,pageSize:this.limit
@@ -34,27 +39,30 @@ Ext.ux.DirectMetaGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     		,prependButtons:true
     		,items:[{
     		    text:"Add"
+    		    ,iconCls:"icon-add"
     		    ,scope:this
     		    ,handler:this.addRow
     		}, "-", {
     		    text:"Remove"
+    		    ,iconCls:"icon-remove"
     		    ,scope:this
     		    ,handler:this.removeRows
     		}, "->", "-"]
         });
-
+*/
         Ext.ux.DirectMetaGrid.superclass.initComponent.apply( this, arguments );
 
     }
 
 	,onDataChange:function() {
 		var columns = this.ds.reader.jsonData.columns;
-		Ext.each(columns, this.grid.setColumnEditor, this.grid);
+        // Ext.each(columns, this.grid.setColumnEditor, this.grid);
         this.cm.setConfig(columns);
         this.syncFocusEl(0);
 	}
 
     ,setColumnEditor:function(column) {
+        console.log("column", column);
         column.editor = new Ext.form.TextField();
     }
 

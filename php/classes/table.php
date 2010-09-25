@@ -3,7 +3,7 @@
 class table {
 
 	public $name;
-	public $select;
+	public $select = false;
 	public $columns = false;
 	public $start;
 	public $limit;
@@ -11,9 +11,17 @@ class table {
 	public $dir = false;
 	public $primaryKey = false;
 
-	function __construct($name) {
+	function __construct($schema, $name) {
+		$this->schema = $schema;
 		$this->name = $name;
 		$this->select = new select();
+	}
+
+	function rename($oldName, $newName) {
+		if (!isset($this->select)) $this->select = new select();
+		$query = "RENAME TABLE $oldName TO $newName";
+		$rows = $this->select->exec($this->schema, $query);
+		return $newName;
 	}
 
 	function setConfig($config) {
@@ -25,21 +33,22 @@ class table {
 
 	function getData($index=false) {
 		$order = $this->getSortInfo();
-		$query = "SELECT * FROM $this->name ORDER BY ".$order['field']." ".$order['direction']." LIMIT $this->start, $this->limit";
-		$rows = $this->select->exec('accelrh', $query);
+		$order = ($order['field']) ? "ORDER BY ".$order['field']." ".$order['direction'] : "";
+		$query = "SELECT * FROM $this->name $order LIMIT $this->start, $this->limit";
+		$rows = $this->select->exec($this->schema, $query);
 		return $rows;
 	}
 
 	function getDataAt($field, $index) {
 		$where = "WHERE $field = $index";
-		$query = "SELECT * FROM $this->name WHERE id = $index";
-		$rows = $this->select->exec('accelrh', $query);
+		$query = "SELECT * FROM $this->name WHERE $field = $index";
+		$rows = $this->select->exec($this->schema, $query);
 		return $rows[0];
 	}
 
 	function getColumns() {
 		if ($this->columns === false) {
-			$query = "SELECT * FROM COLUMNS WHERE TABLE_NAME = '$this->name'";
+			$query = "SELECT * FROM COLUMNS WHERE TABLE_SCHEMA = '$this->schema' AND TABLE_NAME = '$this->name' ORDER BY ORDINAL_POSITION";
 			$this->columns = $this->select->exec('information_schema', $query);
 		}
 		return $this->columns;
@@ -47,7 +56,7 @@ class table {
 
 	function getCount() {
 		$query = "SELECT COUNT(*) AS count FROM $this->name";
-		$rows = $this->select->exec('accelrh', $query);
+		$rows = $this->select->exec($this->schema, $query);
 		return $rows[0]['count'];
 	}
 
@@ -75,7 +84,7 @@ class table {
 			if ($key !== $pk) $set[] = "$key = '$value'";
 		$set = implode(", ", $set);
 		$query = "UPDATE $this->name SET $set WHERE $pk = ".$data->{$pk};
-		$this->select->exec('accelrh', $query);
+		$this->select->exec($this->schema, $query);
 	}
 
 	function insertData($data) {
@@ -85,13 +94,13 @@ class table {
 			$field['value'] = $value;
 		}
 		$query = "INSERT INTO $this->name (".$field['name'].") VALUES ('".$field['value']."')";
-		return $this->select->exec('accelrh', $query);
+		return $this->select->exec($this->schema, $query);
 	}
 
 	function deleteData($data) {
 		$pk = $this->getPrimaryKey();
 		$query = "DELETE FROM $this->name WHERE $pk = ".$data->{$pk};
-		$this->select->exec('accelrh', $query);
+		$this->select->exec($this->schema, $query);
 	}
 
 }
