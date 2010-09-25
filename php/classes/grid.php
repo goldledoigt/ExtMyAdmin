@@ -79,7 +79,7 @@ class grid extends table {
 					'xtype' => 'datefield'
 					,'format' => $this->dateFormat
 				);
-			} else if ($c[$i]['DATA_TYPE'] === 'datetime') {
+			} else if ($c[$i]['DATA_TYPE'] === 'datetime' or $c[$i]['DATA_TYPE'] === 'timestamp') {
 				$columns[$i]['width'] = 115;
 				$columns[$i]['xtype'] = 'datecolumn';
 				$columns[$i]['format'] = $this->dateTimeFormat;
@@ -141,7 +141,7 @@ class grid extends table {
 			else if ($c[$i]['DATA_TYPE'] === 'date') {
 				$fields[$i]['type'] = 'date';
 				$fields[$i]['dateFormat'] = $this->dateFormat;
-			} 	else if ($c[$i]['DATA_TYPE'] === 'datetime') {
+			} 	else if ($c[$i]['DATA_TYPE'] === 'datetime' or $c[$i]['DATA_TYPE'] === 'timestamp') {
 				$fields[$i]['type'] = 'date';
 				$fields[$i]['dateFormat'] = $this->dateTimeFormat;
 			}			
