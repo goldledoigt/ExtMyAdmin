@@ -21,7 +21,7 @@ class request {
 		}
 	}
 
-	function getJson() {
+	function getResult() {
 
 		$json = array();
 		$json['action'] = $this->params->action;
@@ -31,12 +31,10 @@ class request {
 		if ($this->error) {
 			$json['msg'] = $this->error['msg'];
 		} else {
-			// $instance = new $this->params->action($this->params->data[0]);
-			// 			$json['result'] = $instance->{$this->params->method}();
-			$instance = new grid();
-			$json['result'] = $instance->read();
+			$instance = new $this->params->action($this->params->data);
+			$json['result'] = $instance->{$this->params->method}();
 		}
-		return json_encode($json);
+		return $json;
 	}
 
 	function error($msg) {
@@ -44,13 +42,5 @@ class request {
 	}
 
 }
-/*
-class table { function getData() {return array();} }
 
-$_REQUEST = array('action' => 'table', 'method' => 'getData', 'data' => '{toto:42}', 'tid' => 2, 'type' => 'rpc');
-
-header('Content-Type:text/plain');
-$r = new request($_REQUEST);
-print $r->getJson();
-*/
 ?>

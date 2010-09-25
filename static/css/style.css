@@ -1,11 +1,52 @@
-.icon-database {
-    background:url("http://cdn.iconfinder.net/data/icons/cologne/16x16/database.png") no-repeat scroll 0 0 transparent !important;
+/* ICONS
+***********************************************************************************************************/
+
+.icon-node-schema {
+    background:url("../img/schema.png") no-repeat scroll 0 0 transparent !important;
 }
 
-.icon-table {
-    background:url("http://cdn.iconfinder.net/data/icons/silk2/table.png") no-repeat scroll 0 0 transparent !important;
+.icon-node-table {
+    background:url("../img/table.png") no-repeat scroll 0 0 transparent !important;
 }
 
+.icon-node-column {
+    background:url("../img/column.png") no-repeat scroll 0 0 transparent !important;
+}
+
+.icon-add {
+    background:url("../img/add.png") no-repeat scroll 0 0 transparent !important;
+}
+
+.icon-remove {
+    background:url("../img/cross.png") no-repeat scroll 0 0 transparent !important;
+}
+
+.icon-rename {
+    background:url("../img/rename.png") no-repeat scroll 0 0 transparent !important;
+}
+
+/* COLUMN TOOLTIPS
+***********************************************************************************************************/
+
+.tooltip-column-details {
+    border-collapse:collapse;
+    width:150px;
+}
+
+.tooltip-column-details td {
+    margin:0;
+}
+
+.tooltip-column-details tr td:first-child {
+    font-weight:bold;
+    text-align:left;
+    padding-right:2px;
+}
+
+
+/*
+*/
+/*
 .icon-error {
     background:url("http://cdn.iconfinder.net/data/icons/sweetiev3/png-24/16-square-red.png") no-repeat scroll 3px 0 transparent !important;
 }
@@ -21,3 +62,4 @@
 .row-success {
     color:green;
 }
+*/
