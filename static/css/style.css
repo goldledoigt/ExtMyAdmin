@@ -1,29 +1,32 @@
+/* ICONS
+***********************************************************************************************************/
+
 .icon-node-schema {
-    background:url("http://cdn.iconfinder.net/data/icons/cologne/16x16/database.png") no-repeat scroll 0 0 transparent !important;
+    background:url("../img/schema.png") no-repeat scroll 0 0 transparent !important;
 }
 
 .icon-node-table {
-    background:url("http://p.yusukekamiyamane.com/icons/search/fugue/icons/table.png") no-repeat scroll 0 0 transparent !important;
+    background:url("../img/table.png") no-repeat scroll 0 0 transparent !important;
 }
 
 .icon-node-column {
-    background:url("http://p.yusukekamiyamane.com/icons/search/fugue/icons/table-select-column.png") no-repeat scroll 0 0 transparent !important;
+    background:url("../img/column.png") no-repeat scroll 0 0 transparent !important;
 }
 
 .icon-add {
-    background:url("http://p.yusukekamiyamane.com/icons/search/fugue/icons/plus-button.png") no-repeat scroll 0 0 transparent !important;
+    background:url("../img/add.png") no-repeat scroll 0 0 transparent !important;
 }
 
 .icon-remove {
-    background:url("http://p.yusukekamiyamane.com/icons/search/fugue/icons/cross-button.png") no-repeat scroll 0 0 transparent !important;
+    background:url("../img/cross.png") no-repeat scroll 0 0 transparent !important;
 }
 
 .icon-rename {
-    background:url("http://cdn.iconfinder.net/data/icons/ledicons/textfield_rename.png") no-repeat scroll 0 0 transparent !important;
+    background:url("../img/rename.png") no-repeat scroll 0 0 transparent !important;
 }
 
-/* TOOLTIP
-*********************************************************/
+/* COLUMN TOOLTIPS
+***********************************************************************************************************/
 
 .tooltip-column-details {
     border-collapse:collapse;

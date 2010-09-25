@@ -1,7 +1,8 @@
 <?php
 
 // site settings
-$DOC_ROOT = $_SERVER['DOCUMENT_ROOT'].'/project/ExtMyAdmin';
+$DOC_ROOT = '/project/ExtMyAdmin';
+$DOC_ROOT = $_SERVER['DOCUMENT_ROOT'].$DOC_ROOT;
 
 // mysql settings
 $db_host = 'localhost';
