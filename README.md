@@ -4,8 +4,8 @@ ExtMyAdmin
 
 Install
 --------------
->copy settings.sample.php to settings.php  
->edit settings to set database information and site document root.  
+>Copy settings.sample.php to settings.php  
+>Edit settings to set database information and site document root.  
 
 Features
 --------------
@@ -17,7 +17,8 @@ Features
 >Drop table  
 >Add table row  
 >Remove table row  
->update table row  
+>Update table row  
+>Display column details
 
 > #### ExtJS
 >
