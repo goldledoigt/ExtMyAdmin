@@ -5,7 +5,7 @@ ExtMyAdmin
 Install
 --------------
 >copy settings.sample.php to settings.php  
->edit settings and set database information and site document root.  
+>edit settings to set database information and site document root.  
 
 Features
 --------------
@@ -24,6 +24,8 @@ Features
 >Use of Ext.Direct on TreePanel loader and GridPanel store  
 >Use of metaData to configure GridPanel on store load
 
+Screenshot
+--------------
 ![Server return for the read methode][1]
 
 [1]: https://github.com/goldledoigt/ExtMyAdmin/raw/master/screenshot.png
