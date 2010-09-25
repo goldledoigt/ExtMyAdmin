@@ -32,34 +32,11 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         });
 
         this.bbar = [{
-            text:"Add"
+            text:"Add Database"
 		    ,iconCls:"icon-add"
 		    ,scope:this
 		    ,handler:this.addSchema
         }];
-
-        // this.contextMenu = new Ext.menu.Menu({
-        //     items:[{
-        //         id:"removeDatabase"
-        //         ,text:"Remove Database"
-        //     }, {
-        //         id:"removeTable"
-        //         ,text:"Remove Table"
-        //     }, {
-        //         id:"truncateTable"
-        //         ,text:"Truncate Table"
-        //     }, {
-        //         id:"renameTable"
-        //         ,text:"Rename Table"
-        //     }, {
-        //         id:"duplicateTable"
-        //         ,text:"Duplicate Table"
-        //     }]
-            // ,listeners:{
-            //     scope:this
-            //     ,itemclick:this.onMenuItemClick
-            // }
-        // });
 
         ExtMyAdmin.BrowsingTree.superclass.initComponent.apply(this, arguments);
         
@@ -69,6 +46,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
             click:this.onNodeClick
             ,contextmenu:this.onContextMenu
         });
+
     }
 
     ,onNodeClick:function(node) {
@@ -103,6 +81,10 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         var items, type = node.attributes.type;
         if (type === "schema") {
             items = [{
+                id:"addTable"
+                ,text:"Add new table"
+                ,iconCls:"icon-add"
+            }, {
                 id:"removeSchema"
                 ,text:"Drop database"
                 ,iconCls:"icon-remove"
@@ -112,6 +94,10 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
                 id:"renameTable"
                 ,text:"Rename Table"
                 ,iconCls:"icon-rename"
+            }, {
+                id:"removeTable"
+                ,text:"Drop table"
+                ,iconCls:"icon-remove"
             }];
         }
         return items;
@@ -123,11 +109,28 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         };
         var promptCallback = function(response, value, options) {
             if (response === "ok" && value.length) {
-                tree.create(value, "schema", ajaxCallback.createDelegate(this));
+                tree.create(value, "schema", value, ajaxCallback.createDelegate(this));
             }
         };
         Ext.MessageBox.prompt(
             "Create Database", "Database name:"
+            ,promptCallback, this
+        );
+    }
+
+    ,addTable:function() {
+        var node = this.contextMenu.node;
+        var ajaxCallback = function(result, response) {
+            node.appendChild([result]);
+        };
+        var promptCallback = function(response, value, options) {
+            if (response === "ok" && value.length) {
+                node.expand();
+                tree.create(value, "table", node.text, ajaxCallback.createDelegate(this));
+            }
+        };
+        Ext.MessageBox.prompt(
+            'Create New "'+node.text+'" Table', "Table name:"
             ,promptCallback, this
         );
     }
@@ -149,6 +152,23 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         );
     }
 
+    ,removeTable:function() {
+        var node = this.contextMenu.node;
+        var ajaxCallback = function(result, response) {
+            node.remove();
+        };
+        var confirmCallback = function(response, value, options) {
+            if (response === "yes") {
+                tree.destroy(node.id, "table", node.parentNode.id, ajaxCallback.createDelegate(this));
+            }
+        };
+        Ext.MessageBox.confirm(
+            "Drop Table"
+            ,'Are you sure you want to drop "'+node.id+'" table ?'
+            ,confirmCallback, this
+        );
+    }
+
     ,removeSchema:function() {
         var node = this.contextMenu.node;
         var ajaxCallback = function(result, response) {
@@ -156,12 +176,12 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         };
         var confirmCallback = function(response, value, options) {
             if (response === "yes") {
-                tree.destroy(node.id, "schema", ajaxCallback.createDelegate(this));
+                tree.destroy(node.id, "schema", node.id, ajaxCallback.createDelegate(this));
             }
         };
         Ext.MessageBox.confirm(
             "Drop Database"
-            ,'Are you sure you want to drop"'+node.id+'" database ?'
+            ,'Are you sure you want to drop "'+node.id+'" database ?'
             ,confirmCallback, this
         );
     }

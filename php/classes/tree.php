@@ -25,6 +25,8 @@ class tree {
 	function destroy() {
 		if ($this->type === 'schema')
 			return $this->destroySchema();
+		else if ($this->type === 'table')
+			return $this->destroyTable();
 	}
 
 	function destroySchema() {
@@ -34,11 +36,18 @@ class tree {
 		return $node;
 	}
 
+	function destroyTable() {
+		schema::destroyTable($this->schema, $this->node);
+		$node = array();
+		$node['success'] = true;
+		return $node;
+	}
+
 	function create() {
 		if ($this->type === 'schema')
 			return $this->createSchema();
-		// else if ($this->type === 'table')
-		// 	return $this->createTable();
+		else if ($this->type === 'table')
+			return $this->createTable();
 	}
 
 	function createSchema() {
@@ -48,6 +57,16 @@ class tree {
 		$node['id'] = $this->node;
 		$node['text'] = $this->node;
 		$node['type'] = 'schema';
+		return $node;
+	}
+
+	function createTable() {
+		schema::createTable($this->schema, $this->node);
+		$node = array();
+		$node['iconCls'] = "icon-node-table";
+		$node['id'] = $this->node;
+		$node['text'] = $this->node;
+		$node['type'] = 'table';
 		return $node;
 	}
 

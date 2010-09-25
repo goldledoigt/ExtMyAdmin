@@ -8,16 +8,16 @@ ExtMyAdmin.TableGrid = Ext.extend(Ext.ux.DirectMetaGrid, {
         
         this.bbar = new Ext.PagingToolbar({
     		displayInfo:true
+            ,hidden:true
     		,pageSize:this.limit
-    		,store:this.store
     		,prependButtons:true
     		,items:[{
-    		    text:"Add"
+    		    text:"Add Row"
     		    ,iconCls:"icon-add"
     		    ,scope:this
     		    ,handler:this.addRow
     		}, "-", {
-    		    text:"Remove"
+    		    text:"Remove Row"
     		    ,iconCls:"icon-remove"
     		    ,scope:this
     		    ,handler:this.removeRows
@@ -25,7 +25,9 @@ ExtMyAdmin.TableGrid = Ext.extend(Ext.ux.DirectMetaGrid, {
         });
         
         ExtMyAdmin.TableGrid.superclass.initComponent.apply(this, arguments);
-        
+
+        this.getBottomToolbar().bindStore(this.store);
+
         this.on({
             scope:this
             ,tableselect:this.onTableSelect
@@ -33,6 +35,8 @@ ExtMyAdmin.TableGrid = Ext.extend(Ext.ux.DirectMetaGrid, {
     }
 
     ,onTableSelect:function(tree, node) {
+        var bbar = this.getBottomToolbar();
+        if (bbar.hidden) bbar.show();
         this.store.setDefaultSort("");
 		this.store.baseParams.table = node.id;
 		this.store.baseParams.schema = node.parentNode.id;
