@@ -21,7 +21,7 @@ Features
 
 > #### ExtJS
 >
->Use of Ext.Direct on TreePanel loader and GridPanel store  
+>Use of Ext.Direct with TreePanel loader and GridPanel store  
 >Use of metaData to configure GridPanel on store load
 
 Screenshot
