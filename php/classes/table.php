@@ -1,6 +1,6 @@
 <?php
 
-class table {
+class Table {
 
 	public $name;
 	public $select = false;

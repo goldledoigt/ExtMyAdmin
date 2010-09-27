@@ -1,8 +1,12 @@
-Ext.ns("ExtMyAdmin.TableGrid");
+Ext.ns("ExtMyAdmin.EditTableGrid");
 
-ExtMyAdmin.TableGrid = Ext.extend(Ext.ux.DirectMetaGrid, {
+ExtMyAdmin.EditTableGrid = Ext.extend(Ext.ux.DirectMetaGrid, {
 
-    initComponent:function() {
+    columnLines:false
+
+    ,initComponent:function() {
+
+        this.viewConfig = {forceFit:true};
 
         this.paramOrder = ["schema", "table", "start", "limit", "sort", "dir"];
 
@@ -24,13 +28,13 @@ ExtMyAdmin.TableGrid = Ext.extend(Ext.ux.DirectMetaGrid, {
     		}, "->", "-"]
         });
         
-        ExtMyAdmin.TableGrid.superclass.initComponent.apply(this, arguments);
+        ExtMyAdmin.EditTableGrid.superclass.initComponent.apply(this, arguments);
 
         this.getBottomToolbar().bindStore(this.store);
 
         this.on({
             scope:this
-            ,tableselect:this.onTableSelect
+            ,tableedit:this.onTableSelect
         })
     }
 
@@ -45,4 +49,4 @@ ExtMyAdmin.TableGrid = Ext.extend(Ext.ux.DirectMetaGrid, {
 
 });
 
-Ext.reg("tablegrid", ExtMyAdmin.TableGrid);
+Ext.reg("edittablegrid", ExtMyAdmin.EditTableGrid);

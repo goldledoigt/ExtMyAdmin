@@ -9,7 +9,7 @@ Ext.ux.DirectMetaGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
         this.columns = [];
 
-    	this.viewConfig = {onDataChange:this.onDataChange};
+    	this.viewConfig = Ext.apply(this.viewConfig || {}, {onDataChange:this.onDataChange});
 
         this.selModel = new Ext.grid.RowSelectionModel({
             moveEditorOnEnter:false

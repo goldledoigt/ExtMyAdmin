@@ -20,6 +20,7 @@ class select {
 	public $query;
 	public $fields;
 	public $tables;
+	public $count;
 
 	function __construct() {
 		$this->db = new mysql();
@@ -37,6 +38,7 @@ class select {
 		}
 		
 		if ($res) {
+			$this->count = $this->db->numrows($res);
 			if (is_resource($res)) {
 				while ($row = $this->db->getAssoc($res)) {
 					$rows[] = $row;
@@ -109,7 +111,7 @@ function dumpArray($array) {
 		print "------------------\n";
 	}
 }
-
+/*
 header('Content-Type:text/plain');
 $query = "SELECT DISTINCT toto, titi as tutu, paf pof FROM tata, puf pouf WHERE id = 3 AND user LIKE '%jean%'";
 print $query."\n";
@@ -132,7 +134,7 @@ print "\nTABLES:\n";
 dumpArray($s->tables);
 print "\nFIELDS:\n";
 dumpArray($s->fields);
-
+*/
 
 
 ?>

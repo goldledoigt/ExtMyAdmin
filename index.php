@@ -28,52 +28,21 @@
 						,{name:"create", len:1}
 						,{name:"destroy", len:1}
 					]
+					,editgrid:[
+						{name:"read", len:6}
+						,{name:"update", len:1}
+						,{name:"create", len:1}
+						,{name:"destroy", len:1}
+					]
 				}
 			};
 		</script>
 
 		<script type="text/javascript" src="static/js/Ext.ux.DirectMetaGrid.js"></script>
 		<script type="text/javascript" src="static/js/ExtMyAdmin.TableGrid.js"></script>
+		<script type="text/javascript" src="static/js/ExtMyAdmin.EditTableGrid.js"></script>
 		<script type="text/javascript" src="static/js/ExtMyAdmin.BrowsingTree.js"></script>
-
-		<script>
-			Ext.onReady( function() {
-
-				Ext.Direct.addProvider(API);
-
-				Ext.QuickTips.init();
-
-				new Ext.Viewport({
-					layout:"border"
-					,items:[{
-						xtype:"tablegrid"
-						,ref:"tableGrid"
-						,region:"center"
-						,margins:"4 4 4 0"
-						,limit:28
-						,api:{
-			            	read:grid.read
-			            	,create:grid.create
-			            	,update:grid.update
-			            	,destroy:grid.destroy
-			          	}
-					}, {
-						xtype:"browsingtree"
-						,ref:"browsingTree"
-						,region:"west"
-						,split:true
-						,margins:"4 0 4 4"
-				        ,width:250
-					}]
-					,listeners:{
-						afterrender:function() {
-							this.tableGrid.relayEvents(this.browsingTree, ["tableselect"]);
-						}
-					}
-				});
-
-			});
-		</script>
+		<script type="text/javascript" src="static/js/main.js"></script>
 	</body>
 
 </html>

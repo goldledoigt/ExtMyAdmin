@@ -25,6 +25,11 @@
     background:url("../img/rename.png") no-repeat scroll 0 0 transparent !important;
 }
 
+.icon-edit {
+    background:url("http://p.yusukekamiyamane.com/icons/search/fugue/icons/pencil.png") no-repeat scroll 0 0 transparent !important;
+}
+
+
 /* COLUMN TOOLTIPS
 ***********************************************************************************************************/
 
