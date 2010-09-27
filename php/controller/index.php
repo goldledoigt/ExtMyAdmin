@@ -2,9 +2,6 @@
 
 header('Content-Type: text/javascript');
 
-ini_set('display_errors', 1);
-ini_set('error_reporting', E_ALL | E_ERROR | E_USER_ERROR);
-
 require dirname(__FILE__).'/../../settings.php';
 require dirname(__FILE__).'/../json/error.php';
 require dirname(__FILE__).'/../orm/orm.php';

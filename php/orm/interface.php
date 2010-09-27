@@ -5,7 +5,7 @@
  *
  * @class iorm
  */
-class iorm {
+class iorm extends json_error {
   /**
    * Database hostname
    *
@@ -33,13 +33,6 @@ class iorm {
    * @property {string} $_db_name
    */
   protected $_db_name;
-
-  /**
-   * Error(s) store
-   *
-   * @property {array} $_error
-   */
-  protected $_error;
 
   /**
    * ORM Interface constructor
@@ -71,15 +64,5 @@ class iorm {
    */
   public function __destruct() {
     $this->close();
-  }
-
-  /**
-   * Check if error were generated
-   *
-   * @method getError
-   * @return {boolean} True if there is some errors else false
-   */
-  public function getError() {
-    return (!empty($this->_error[0]));
   }
 }
