@@ -35,7 +35,7 @@ class select {
 		} else {
 			$res = $this->db->query($query);
 		}
-		
+
 		if ($res) {
 			if (is_resource($res)) {
 				while ($row = $this->db->getAssoc($res)) {
@@ -109,7 +109,7 @@ function dumpArray($array) {
 		print "------------------\n";
 	}
 }
-
+/*
 header('Content-Type:text/plain');
 $query = "SELECT DISTINCT toto, titi as tutu, paf pof FROM tata, puf pouf WHERE id = 3 AND user LIKE '%jean%'";
 print $query."\n";
@@ -134,5 +134,5 @@ print "\nFIELDS:\n";
 dumpArray($s->fields);
 
 
-
+*/
 ?>

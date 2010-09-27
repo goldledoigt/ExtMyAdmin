@@ -4,8 +4,7 @@ header('Content-Type:text/javascript');
 require_once '../../settings.php';
 
 function __autoload($class_name) {
-	global $DOC_ROOT;
-    require_once $DOC_ROOT. '/php/classes/' . $class_name . '.php';
+  require_once dirname(__FILE__).'/../../php/classes/'.$class_name.'.php';
 }
 
 $result = array();
