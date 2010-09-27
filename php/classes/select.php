@@ -14,7 +14,6 @@ function iexplode($separator, $string, $limit = false ) {
 }
 
 
-
 class select {
 
 	public $query;
@@ -22,11 +21,11 @@ class select {
 	public $tables;
 	public $count;
 
-	function __construct() {
-		$this->db = new mysql();
+	public function __construct() {
+      $this->db = new orm();
 	}
 
-	function exec($db, $query, $parseQuery = false) {
+	public function exec($db, $query, $parseQuery = false) {
 		$rows = array();
 		$this->query = $query;
 		if ($parseQuery) $this->parseQuery();
@@ -136,5 +135,4 @@ print "\nFIELDS:\n";
 dumpArray($s->fields);
 */
 
-*/
 ?>
