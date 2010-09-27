@@ -91,6 +91,10 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
             }];
         } else if (type === "table") {
             items = [{
+                id:"editTable"
+                ,text:"Edit Table"
+                ,iconCls:"icon-edit"
+            }, {
                 id:"renameTable"
                 ,text:"Rename Table"
                 ,iconCls:"icon-rename"
@@ -103,7 +107,11 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         return items;
     }
 
-    ,addSchema:function() {
+    ,editTable:function(node) {
+        this.fireEvent("tableedit", this, node);
+    }
+
+    ,addSchema:function(node) {
         var ajaxCallback = function(result, response) {
             this.getRootNode().appendChild([result]);
         };
@@ -118,8 +126,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         );
     }
 
-    ,addTable:function() {
-        var node = this.contextMenu.node;
+    ,addTable:function(node) {
         var ajaxCallback = function(result, response) {
             node.appendChild([result]);
         };
@@ -152,8 +159,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         );
     }
 
-    ,removeTable:function() {
-        var node = this.contextMenu.node;
+    ,removeTable:function(node) {
         var ajaxCallback = function(result, response) {
             node.remove();
         };
@@ -169,8 +175,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         );
     }
 
-    ,removeSchema:function() {
-        var node = this.contextMenu.node;
+    ,removeSchema:function(node) {
         var ajaxCallback = function(result, response) {
             node.remove();
         };
