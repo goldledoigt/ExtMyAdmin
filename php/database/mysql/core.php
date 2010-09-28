@@ -1,11 +1,14 @@
 <?php
 
+require dirname(__FILE__).'/api.php';
+
 /**
  * MySQL class
  *
- * @class mysql
+ * @class Mysql
+ * @extends MysqlApi
  */
-class mysql extends iorm {
+class Mysql extends MysqlApi {
   /**
    * MySQL connection link
    *
@@ -32,6 +35,7 @@ class mysql extends iorm {
   public function __construct($db_host='', $db_user='',
                               $db_pass='', $db_name='') {
     parent::__construct($db_host, $db_user, $db_pass, $db_name);
+    format::set_addslashes('mysql_real_escape_string');
     $this->select_db();
   }
 
@@ -63,7 +67,8 @@ class mysql extends iorm {
   public function query($query) {
     $this->_error = array();
     $this->__current_query = $query;
-    if ($result = mysql_query($query, $this->__link)) {
+    $result = mysql_query($query, $this->__link);
+    if (empty($result) === false) {
       return ($result);
     } else {
       $this->_show_error('cannot execute query');
@@ -79,7 +84,21 @@ class mysql extends iorm {
     return (mysql_fetch_object($resource));
   }
 
-  public function getAssoc($resource) {
+  public function gets_assoc($resource) {
+    if (is_string($resource)) {
+      $resource = $this->query($resource);
+    }
+    $results = array();
+    while ($result = $this->get_assoc($resource)) {
+      $results[] = $result;
+    }
+    return ($results);
+  }
+
+  public function get_assoc($resource) {
+    if (is_string($resource)) {
+      $resource = $this->query($resource);
+    }
     return (mysql_fetch_assoc($resource));
   }
 

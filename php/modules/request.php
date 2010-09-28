@@ -3,9 +3,9 @@
 /**
  * Request dispatcher class
  *
- * @class request
+ * @class RequestModule
  */
-class request {
+class RequestModule {
   /**
    * Current php class instance
    *
@@ -71,7 +71,8 @@ class request {
     if (empty($this->error['msg']) === false) {
       $json['msg'] = $this->error['msg'];
     } else {
-      $instance = new $this->params['action']($this->params['data']);
+      $class_name = ucfirst($this->params['action']).'Module';
+      $instance = new $class_name($this->params['data']);
       $json['result'] = $instance->{$this->params['method']}();
     }
     return ($json);

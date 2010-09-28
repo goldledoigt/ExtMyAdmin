@@ -3,35 +3,40 @@
 /**
  * JSON error class
  *
- * @class json_error
+ * @class JsonError
  */
-class json_error {
+class JsonError {
   /**
    * Error(s) store
    *
-   * @property {array} $_error
+   * @property array $_error
    */
   protected $_error = array();
 
   /**
    * Check if error were generated
    *
-   * @method getError
-   * @return {boolean} True if there is some errors else false
+   * @method get_error
+   * @param string $msg Error message
+   * @param string $attr Error key attribute (default to error)
+   * @return string Json encoded error
    */
-  public function getError() {
-    return (!empty($this->_error[0]));
+  public function get_error($msg, $attr='error') {
+    $class_name = get_parent_class($this);
+    $error = array($attr => 'From "'.$class_name.'" error: "'.$msg.'"');
+    $this->_error[] = $error;
+    return (JsonParser::encode($error));
   }
 
   /**
    * Format error to JSON, show to stdout and exit.
    *
    * @method _show_error
-   * @param {string} $msg Error message
+   * @param string $msg Error message
+   * @param string $attr Error key attribute (default to error)
    */
-  protected function _show_error($msg) {
-    $class_name = get_parent_class($this);
-    $json = '{"error": "From '.$class_name.' error: "'.$msg.'"}';
+  protected function _show_error($msg, $attr='error') {
+    $json = $this->get_error($msg, $attr);
     exit($json);
   }
 }

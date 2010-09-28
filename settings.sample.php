@@ -28,9 +28,9 @@ abstract class settings {
   const db_pass = 'passwd';
 
   /**
-   * ORM class
+   * Database class
    *
-   * @property-read {orm} orm_class
+   * @property-read {database} database_class
    */
-  const orm_class = 'mysql';
+  const database_class = 'mysql';
 }

@@ -1,34 +1,13 @@
 <?php
 
-header('Content-Type: text/javascript');
+header('Content-Type: application/json');
 
 require dirname(__FILE__).'/../../settings.php';
-require dirname(__FILE__).'/../json/error.php';
-require dirname(__FILE__).'/../orm/orm.php';
+require dirname(__FILE__).'/core.php';
 
-/**
- * Autoload class function declaration.
- * Automaticly require file class if class does not exist.
- *
- * @function __autoload
- * @param {string} $class_name Class name
- */
-function __autoload($class_name) {
-  $file_path = dirname(__FILE__).'/../../php/classes/'.basename($class_name).'.php';
-  if (class_exists($class_name) === false and
-      file_exists($file_path) === true) {
-    require $file_path;
-  }
+$input = file_get_contents('php://input');
+$controller = new Controller($input);
+foreach ($controller->get_requests() as $request) {
+  $controller->execute($request);
 }
-
-$result = array();
-$requests = json_decode(file_get_contents('php://input'), true);
-if (empty($requests['action']) === false) {
-  $requests = array($requests);
-}
-foreach ($requests as $request) {
-  $r = new request($request);
-  $result[] = $r->getResult();
-}
-
-print json_encode($result);
+echo $controller->get_results();
