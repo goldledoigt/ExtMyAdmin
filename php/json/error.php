@@ -22,10 +22,10 @@ class JsonError {
    * @return string Json encoded error
    */
   public function get_error($msg, $attr='error') {
-    $class_name = get_parent_class($this);
+    $class_name = get_class($this);
     $error = array($attr => 'From "'.$class_name.'" error: "'.$msg.'"');
     $this->_error[] = $error;
-    return (JsonParser::encode($error));
+    return ($error);
   }
 
   /**
@@ -37,6 +37,6 @@ class JsonError {
    */
   protected function _show_error($msg, $attr='error') {
     $json = $this->get_error($msg, $attr);
-    exit($json);
+    exit(JsonParser::encode($json));
   }
 }
