@@ -93,20 +93,21 @@ abstract class IDatabase extends JsonError {
   abstract public function get_schemas($database);
 
   /**
-   * Create database schema.
+   * Return database tables.
    *
-   * @method create_schema
-   * @param string $name Schema name
+   * @method get_tables
    * @param string $database Database name
+   * @return array Results
    */
-  abstract public function create_schema($name, $database);
+  abstract public function get_tables($database);
 
   /**
-   * Destroy database schema.
+   * Return table columns.
    *
-   * @method destroy_schema
-   * @param string $name Schema name
+   * @method get_columns
    * @param string $database Database name
+   * @param string $table Table name
+   * @return array Results
    */
-  abstract public function destroy_schema($name, $database);
+  abstract public function get_columns($database, $table);
 }
