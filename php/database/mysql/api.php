@@ -44,7 +44,7 @@ abstract class MysqlApi extends IDatabase {
   public function get_columns($database='information_schema', $table) {
     $query = Format::set('SHOW COLUMNS FROM `%s`.`%s`',
                          $database, $table);
-    $columns = $this->gets_assoc($query);
+    $columns = $this->gets_assoc($query, array('Field' => 'name'));
     return ($columns);
   }
 }
