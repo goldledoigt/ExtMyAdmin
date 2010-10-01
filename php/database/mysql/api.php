@@ -10,15 +10,14 @@ abstract class MysqlApi extends IDatabase {
   /**
    * Return database schemas.
    *
-   * @method get_schemas
+   * @method get_databases
    * @param string $database Database name
    * @return array Results
    */
-  public function get_schemas($database='information_schema') {
-    $query = Format::set('SELECT `t0`.`SCHEMA_NAME` AS `name` '.
-                         'FROM `information_schema`.`SCHEMATA` AS `t0` '.
-                         'ORDER BY `t0`.`SCHEMA_NAME`');
-    return ($this->gets_assoc($query));
+  public function get_databases($database='information_schema') {
+    $query = Format::set('SHOW DATABASES');
+    $databases = $this->gets_row($query, array('name'));
+    return ($databases);
   }
 
   /**
@@ -29,11 +28,9 @@ abstract class MysqlApi extends IDatabase {
    * @return array Results
    */
   public function get_tables($database='information_schema') {
-    $query = Format::set('SELECT `t0`.`TABLE_NAME` AS `name` '.
-                         'FROM `information_schema`.`TABLES` AS `t0` '.
-                         'WHERE `t0`.`TABLE_SCHEMA` = "%s"',
-                         $database);
-    return ($this->gets_assoc($query));
+    $query = Format::set('SHOW TABLES FROM `%s`', $database);
+    $tables = $this->gets_row($query, array('name'));
+    return ($tables);
   }
 
   /**
@@ -45,12 +42,9 @@ abstract class MysqlApi extends IDatabase {
    * @return array Results
    */
   public function get_columns($database='information_schema', $table) {
-    $query = Format::set('SELECT `t0`.`COLUMN_NAME` AS `name` '.
-                         'FROM `information_schema`.`COLUMNS` AS `t0` '.
-                         'WHERE `t0`.`TABLE_SCHEMA` = "%s" '.
-                         'AND `t0`.`TABLE_NAME` = "%s" '.
-                         'ORDER BY `ORDINAL_POSITION`',
+    $query = Format::set('SHOW COLUMNS FROM `%s`.`%s`',
                          $database, $table);
-    return ($this->gets_assoc($query));
+    $columns = $this->gets_assoc($query);
+    return ($columns);
   }
 }

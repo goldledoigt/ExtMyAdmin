@@ -32,9 +32,9 @@ class TreeModule extends IModule {
    */
   public function callable_read_database($database='', $schema='', $new=false) {
     $nodes = array();
-    $schemas = $this->get_db()->get_schemas($database);
-    foreach ($schemas as $schema) {
-      $nodes[] = $this->_format_result($schema, 'schema');
+    $databases = $this->get_db()->get_databases($database);
+    foreach ($databases as $database) {
+      $nodes[] = $this->_format_result($database, 'schema');
     }
     return ($nodes);
   }

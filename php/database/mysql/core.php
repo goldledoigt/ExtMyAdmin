@@ -17,14 +17,7 @@ class Mysql extends MysqlApi {
   private $__link;
 
   /**
-   * MySQL current query
-   *
-   * @property {string} $__current_query
-   */
-  private $__current_query;
-
-  /**
-   * new mysql()
+   * New MySQL instance.
    *
    * @constructor
    * @param {string} $db_host Database hostname
@@ -32,43 +25,41 @@ class Mysql extends MysqlApi {
    * @param {string} $db_pass Database password
    * @param {string} $db_name Database name
    */
-  public function __construct($db_host='', $db_user='',
-                              $db_pass='', $db_name='') {
-    parent::__construct($db_host, $db_user, $db_pass, $db_name);
+  public function __construct($db_host='', $db_user='', $db_pass='') {
+    parent::__construct($db_host, $db_user, $db_pass);
     format::set_addslashes('mysql_real_escape_string');
-    $this->select_db();
   }
 
+  /**
+   * Return current MySQL link.
+   *
+   * @method _get_link
+   * @return ressource MySQL link
+   */
+  protected function _get_link() {
+    return ($this->__link);
+  }
+
+  /**
+   * Connect to MySQL database.
+   *
+   * @method connect
+   */
   public function connect() {
     $this->__link = mysql_connect($this->_db_host, $this->_db_user,
                                   $this->_db_pass) or
       $this->_show_error('cannot connect');
   }
 
-  public function select_db($db = false) {
-    if (empty($db) === false) {
-      $this->_db_name = $db;
-    }
-    if (empty($this->_db_name) === false) {
-      mysql_select_db($this->_db_name, $this->__link) or
-        $this->_show_error('cannot select database');
-    }
-    return (true);
-  }
-
-  public function insert($query) {
-    $this->__current_query = $query;
-    if ($this->query($query)) {
-      return ($this->last_insert());
-    }
-    return (false);
-  }
-
-  public function query($query) {
-    $this->_error = array();
-    $this->__current_query = $query;
-    $result = mysql_query($query, $this->__link);
-    if (empty($result) === false) {
+  /**
+   * Execute MySQL query.
+   *
+   * @method execute
+   * @param string $query MySQL query
+   * @return mixed MySQL resource if succeed else false
+   */
+  public function execute($query) {
+    if ($result = mysql_query($query, $this->__link)) {
       return ($result);
     } else {
       $this->_show_error('cannot execute query');
@@ -76,70 +67,57 @@ class Mysql extends MysqlApi {
     return (false);
   }
 
-  public function last_insert() {
-    return (mysql_insert_id($this->__link));
-  }
-
-  public function getObj($resource) {
-    return (mysql_fetch_object($resource));
-  }
-
-  public function gets_assoc($resource) {
+  /**
+   * Return query results formated into an associated array.
+   *
+   * @method gets_assoc
+   * @param mixed $resource MySQL query resource or query string
+   * @param array $keys Result key mapping array
+   * @return array Results
+   */
+  public function gets_assoc($resource, array $keys=array()) {
     if (is_string($resource)) {
-      $resource = $this->query($resource);
+      $resource = $this->execute($resource);
     }
     $results = array();
-    while ($result = $this->get_assoc($resource)) {
+    while ($result = mysql_fetch_assoc($resource)) {
+      if (empty($keys) === false) {
+        $result = $this->merge($result, $keys);
+      }
       $results[] = $result;
     }
     return ($results);
   }
 
-  public function get_assoc($resource) {
+  /**
+   * Return query results formated into an array.
+   *
+   * @method gets_row
+   * @param mixed $resource MySQL query resource or query string
+   * @param array $keys Result key mapping array
+   * @return array Results
+   */
+  public function gets_row($resource, array $keys=array()) {
     if (is_string($resource)) {
-      $resource = $this->query($resource);
+      $resource = $this->execute($resource);
     }
-    return (mysql_fetch_assoc($resource));
-  }
-
-  public function getRows($ressource){
-    return (mysql_fetch_row($ressource));
-  }
-
-  public function getArray($result) {
-    if ($this->numrows($result)) {
-      $array = mysql_fetch_array($result);
-      return ($array);
-    } else {
-      return (false);
+    $results = array();
+    while ($result = mysql_fetch_row($resource)) {
+      if (empty($keys) === false) {
+        $result = $this->merge($result, $keys);
+      }
+      $results[] = $result;
     }
-  }
-
-  public function numrows($resource) {
-    return (mysql_num_rows($resource));
-  }
-
-  public function free($resource) {
-    return (mysql_free_result($resource) or
-            $this->_show_error('cannot free resource'));
-  }
-
-  public function close() {
-    return (mysql_close($this->__link) or
-            $this->_show_error('cannot close connection'));
+    return ($results);
   }
 
   /**
-   * Show error on stdout
+   * Close current connection to MySQL server.
    *
-   * @method _show_error
-   * @param {string} $str Error message
+   * @method close
    */
-  protected function _show_error($msg) {
-    $this->_error['query'] = ':'.chr(13).$this->__current_query.chr(13).chr(13);
-    $this->_error['message'] = 'MySQL server returns :'.chr(13).mysql_error();
-    $msg .= ':'.chr(13).$this->__current_query.chr(13).chr(13);
-    $msg .= 'MySQL server returns:'.chr(13).mysql_error();
-    die($msg);
+  public function close() {
+    return (mysql_close($this->__link) or
+            $this->_show_error('cannot close connection'));
   }
 }

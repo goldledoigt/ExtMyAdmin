@@ -28,24 +28,15 @@ abstract class IDatabase extends JsonError {
   protected $_db_pass;
 
   /**
-   * Current database
-   *
-   * @property string $_db_name
-   */
-  protected $_db_name;
-
-  /**
    * Database interface constructor
    *
    * @constructor
    * @param string $db_host Database hostname
    * @param string $db_user Database username
    * @param string $db_pass Database password
-   * @param string $db_name Database name
    */
-  public function __construct($db_host='', $db_user='',
-                              $db_pass='', $db_name='') {
-    foreach (array('db_host', 'db_user', 'db_pass', 'db_name') as $param) {
+  public function __construct($db_host='', $db_user='', $db_pass='') {
+    foreach (array('db_host', 'db_user', 'db_pass') as $param) {
       $class_param = '_'.$param;
       if (empty($$param) and defined('settings::'.$param)) {
         $this->$class_param = constant('settings::'.$param);
@@ -57,20 +48,23 @@ abstract class IDatabase extends JsonError {
   }
 
   /**
-   * Format string with params
+   * Merge the source array by replacing keys, values pair.
    *
-   * @method format
-   * @param string $query Query
-   * @param ... $args Arguments list
-   * @return string Formated query with params if succeed else empty string if failed
+   * @method merge
+   * @param array $src Source array
+   * @param array $keys Source key => new key
+   * @return array Merged array
    */
-  public function format() {
-    $num_args = func_num_args();
-    if (empty($num_args)) {
-      return (false);
+  public function merge(array $src, array $keys, $keep_not_found=false) {
+    $dest = array();
+    foreach ($src as $key => $value) {
+      if (empty($keys[$key]) === false) {
+        $dest[$keys[$key]] = $value;
+      } else if ($keep_not_found === true) {
+        $dest[$key] = $value;
+      }
     }
-    $query = call_user_func_array('sprintf', func_get_args());
-    return ($query);
+    return ($dest);
   }
 
   /**
@@ -87,10 +81,10 @@ abstract class IDatabase extends JsonError {
    * Get database schemas.
    *
    * @abstract
-   * @method get_schemas
+   * @method get_databases
    * @param string $database Database name
    */
-  abstract public function get_schemas($database);
+  abstract public function get_databases($database);
 
   /**
    * Return database tables.
