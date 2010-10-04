@@ -2,6 +2,7 @@
 
 require dirname(__FILE__).'/../json/parser.php';
 require dirname(__FILE__).'/../json/error.php';
+require dirname(__FILE__).'/../collections/core.php';
 require dirname(__FILE__).'/../database/core.php';
 require dirname(__FILE__).'/../modules/interface.php';
 

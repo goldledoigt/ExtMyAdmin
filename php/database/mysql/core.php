@@ -12,18 +12,25 @@ class Mysql extends MysqlApi {
   /**
    * MySQL connection link
    *
-   * @property {stdClass} $__link
+   * @property stdClass $__link
    */
   private $__link;
+
+  /**
+   * MySQL current query
+   *
+   * @property resource $__query
+   */
+  private $__query;
 
   /**
    * New MySQL instance.
    *
    * @constructor
-   * @param {string} $db_host Database hostname
-   * @param {string} $db_user Database username
-   * @param {string} $db_pass Database password
-   * @param {string} $db_name Database name
+   * @param string $db_host Database hostname
+   * @param string $db_user Database username
+   * @param string $db_pass Database password
+   * @param string $db_name Database name
    */
   public function __construct($db_host='', $db_user='', $db_pass='') {
     parent::__construct($db_host, $db_user, $db_pass);
@@ -60,9 +67,24 @@ class Mysql extends MysqlApi {
    */
   public function execute($query) {
     if ($result = mysql_query($query, $this->__link)) {
+      $this->__query = $result;
       return ($result);
     } else {
       $this->_show_error('cannot execute query');
+    }
+    return (false);
+  }
+
+  /**
+   * Get query rows number.
+   *
+   * @method get_num
+   * @param mixed $query Query
+   * @return mixed False if failed else rows number
+   */
+  public function get_num($query=null) {
+    if (empty($query)) {
+      return (mysql_num_rows($this->__query));
     }
     return (false);
   }

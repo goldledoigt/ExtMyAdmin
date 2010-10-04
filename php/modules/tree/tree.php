@@ -70,7 +70,7 @@ class TreeModule extends IModule {
     $nodes = array();
     $columns = $this->get_db()->get_columns($database, $table);
     foreach ($columns as $column) {
-      $nodes[] = $this->_format_result($column, 'column', true);
+      $nodes[] = $this->_format_result($column->gets(), 'column', true);
     }
     return ($nodes);
   }
