@@ -26,7 +26,7 @@ class GridModule extends IModule {
     $opt = array('direction' => $order_dir,
                  'field' => $order_field);
     $results = array('columns' => $this->_format_columns($columns),
-                     'count' => $this->get_db()->get_count(),
+                     'count' => $this->get_db()->get_count($database, $table),
                      'rows' => $data,
                      'metaData' => $this->_format_metadata($columns, $opt),
                      'success' => true);
@@ -43,7 +43,7 @@ class GridModule extends IModule {
    */
   protected function _format_metadata(array $columns, array $opt=array()) {
     $metadata = array('fields' => array(),
-                      'idProperty' => $columns[1]->get('name'),
+                      'idProperty' => $this->_get_primary_key($columns)->get('name'),
                       'root' => 'rows',
                       'successProperty' => 'success',
                       'totalProperty' => 'count',
@@ -53,6 +53,26 @@ class GridModule extends IModule {
                                     'type' => $column->get('type'));
     }
     return ($metadata);
+  }
+
+  /**
+   * Return primary key from columns.
+   *
+   * @method _get_primary_key
+   * @param array $columns Columns
+   * @return Column Column
+   */
+  protected function _get_primary_key(array $columns) {
+    $primary = null;
+    foreach ($columns as $column) {
+      if ($column->get('key') == 'PRI') {
+        $primary = $column;
+      }
+    }
+    if (empty($primary)) {
+      return ($columns[0]);
+    }
+    return ($primary);
   }
 
   /**

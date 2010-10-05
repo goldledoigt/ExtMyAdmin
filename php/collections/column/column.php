@@ -95,15 +95,18 @@ abstract class Column extends ICollection {
         $type == 'float' or
         $type == 'decimal' or
         $type == 'double') {
-      return (60);
+      if ($this->get('key') == 'PRI') {
+        return (60);
+      }
+      return (100);
     } else if ($type == 'datetime' or
                $type == 'date') {
       return (80);
     } else if ($type == 'varchar' or
                $type == 'text') {
-      return (200);
+      return (150);
     }
-    return (150);
+    return (110);
   }
 
   /**

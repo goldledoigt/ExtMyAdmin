@@ -43,7 +43,7 @@ abstract class MysqlApi extends IDatabase {
    * @param string $table Table name
    * @return array Results
    */
-  public function get_columns($database='information_schema', $table) {
+  public function get_columns($database, $table) {
     $query = Format::set('SHOW COLUMNS FROM `%s`.`%s`',
                          $database, $table);
     $columns = $this->gets_assoc($query);
@@ -60,18 +60,22 @@ abstract class MysqlApi extends IDatabase {
    * @param string $database Database name
    * @param string $table Table name
    * @param int $start Start value
-   * @param int $limit Limit value
+   * @param int $num Limit value
    * @return array Results
    */
-  public function get_data($database='information_schema', $table, $start=0, $limit=25, $order_column='', $order_type='ASC') {
+  public function get_data($database, $table, $start=0, $num=0, $order_column='', $order_type='ASC') {
     $order = false;
     if (empty($order_column) === false) {
       $order = Format::set('ORDER BY `t0`.`%s` %s ', $order_column, $order_type);
     }
+    $limit = false;
+    if (empty($num) === false) {
+      $limit = Format::set('LIMIT %d, %d', $start, $num);
+    }
     $query = Format::set('SELECT * FROM `%s`.`%s` AS `t0` '.
                          (empty($order) ? '' : $order).
-                         'LIMIT %d, %d',
-                         $database, $table, $start, $limit);
+                         (empty($limit) ? '' : $limit),
+                         $database, $table);
     return ($this->gets_assoc($query));
   }
 
@@ -79,9 +83,26 @@ abstract class MysqlApi extends IDatabase {
    * Return count of last executed query.
    *
    * @method get_count
-   * @param mixed False if failed else query rows number
+   * @param string $database Database name
+   * @param string $table Table name
+   * @param int $start Start value
+   * @param int $num Limit value
+   * @return mixed False if failed else query rows number
    */
-  public function get_count() {
+  public function get_count($database, $table, $start=0, $num=0, $order_column='', $order_type='ASC') {
+    $order = false;
+    if (empty($order_column) === false) {
+      $order = Format::set('ORDER BY `t0`.`%s` %s ', $order_column, $order_type);
+    }
+    $limit = false;
+    if (empty($num) === false) {
+      $limit = Format::set('LIMIT %d, %d', $start, $num);
+    }
+    $query = Format::set('SELECT * FROM `%s`.`%s` AS `t0` '.
+                         (empty($order) ? '' : $order).
+                         (empty($limit) ? '' : $limit),
+                         $database, $table);
+    $query = $this->execute($query);
     return ($this->get_num());
   }
 }
