@@ -1,5 +1,6 @@
 <?php
 
+mb_internal_encoding('UTF-8');
 header('Content-Type: application/json');
 
 require dirname(__FILE__).'/../../settings.php';

@@ -30,6 +30,8 @@ class GridModule extends IModule {
    */
   public function callable_read($database, $table, $start, $limit, $order_field, $order_dir) {
     $result = array();
+    $table = str_replace('table/', '', $table);
+    $database = str_replace('schema/', '', $database);
     $columns = $this->get_db()->get_columns($database, $table);
     $opt = array('direction' => $order_dir,
                  'field' => $order_field);

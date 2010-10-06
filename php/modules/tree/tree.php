@@ -50,6 +50,7 @@ class TreeModule extends IModule {
    */
   public function callable_read_schema($database='', $schema='', $new=false) {
     $nodes = array();
+    $database = str_replace('schema/', '', $database);
     $tables = $this->get_db()->get_tables($database);
     foreach ($tables as $table) {
       $nodes[] = $this->_format_result($table, 'table');
@@ -68,6 +69,8 @@ class TreeModule extends IModule {
    */
   public function callable_read_table($table='', $database='', $new=false) {
     $nodes = array();
+    $table = str_replace('table/', '', $table);
+    $database = str_replace('schema/', '', $database);
     $columns = $this->get_db()->get_columns($database, $table);
     foreach ($columns as $column) {
       $nodes[] = $this->_format_result($column->gets(), 'column', true);
@@ -86,7 +89,7 @@ class TreeModule extends IModule {
    */
   protected function _format_result(array $result, $type, $leaf=false) {
     return (array('type' => $type,
-                  'id' => $result['name'],
+                  'id' => $type.'/'.$result['name'],
                   'text' => $result['name'],
                   'iconCls' => 'icon-node-'.$type,
                   'leaf' => $leaf));
