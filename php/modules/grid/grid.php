@@ -8,6 +8,15 @@
  */
 class GridModule extends IModule {
   /**
+   * Update a field from database/table.
+   *
+   * @method callable_update
+   * @param array $infos Infos
+   */
+  public function callable_update(array $infos) {
+  }
+
+  /**
    * Read action method.
    *
    * @method callable_read
@@ -22,9 +31,14 @@ class GridModule extends IModule {
   public function callable_read($database, $table, $start, $limit, $order_field, $order_dir) {
     $result = array();
     $columns = $this->get_db()->get_columns($database, $table);
-    $data = $this->get_db()->get_data($database, $table, $start, $limit, $order_field, $order_dir);
     $opt = array('direction' => $order_dir,
                  'field' => $order_field);
+    $primary = $this->_get_primary_key($columns);
+    if (empty($opt['field'])) {
+      $opt['field'] = $primary->get('name');
+      $opt['direction'] = 'ASC';
+    }
+    $data = $this->get_db()->get_data($database, $table, $start, $limit, $opt['field'], $opt['direction']);
     $results = array('columns' => $this->_format_columns($columns),
                      'count' => $this->get_db()->get_count($database, $table),
                      'rows' => $data,
@@ -84,10 +98,11 @@ class GridModule extends IModule {
    */
   protected function _format_columns(array $columns) {
     $results = array();
+    $primary = $this->_get_primary_key($columns);
     foreach ($columns as $column) {
       $results[] = array('align' => 'right',
                          'dataIndex' => $column->get('name'),
-                         'editable' => false,
+                         'editable' => ($column->get('name') === $primary->get('name') ? false : true),
                          'editor' => array('xtype' => $column->get_xtype()),
                          'format' => '0',
                          'header' => $column->get_header(),

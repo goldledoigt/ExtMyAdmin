@@ -85,22 +85,10 @@ abstract class MysqlApi extends IDatabase {
    * @method get_count
    * @param string $database Database name
    * @param string $table Table name
-   * @param int $start Start value
-   * @param int $num Limit value
    * @return mixed False if failed else query rows number
    */
-  public function get_count($database, $table, $start=0, $num=0, $order_column='', $order_type='ASC') {
-    $order = false;
-    if (empty($order_column) === false) {
-      $order = Format::set('ORDER BY `t0`.`%s` %s ', $order_column, $order_type);
-    }
-    $limit = false;
-    if (empty($num) === false) {
-      $limit = Format::set('LIMIT %d, %d', $start, $num);
-    }
-    $query = Format::set('SELECT * FROM `%s`.`%s` AS `t0` '.
-                         (empty($order) ? '' : $order).
-                         (empty($limit) ? '' : $limit),
+  public function get_count($database, $table) {
+    $query = Format::set('SELECT * FROM `%s`.`%s` AS `t0` ',
                          $database, $table);
     $query = $this->execute($query);
     return ($this->get_num());
