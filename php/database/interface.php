@@ -59,9 +59,9 @@ abstract class IDatabase extends JsonError {
     $dest = array();
     foreach ($src as $key => $value) {
       if (empty($keys[$key]) === false) {
-        $dest[$keys[$key]] = $value;
+        $dest[$keys[$key]] = Charset::convert($value, 'UTF-8');
       } else if ($keep_not_found === true) {
-        $dest[$key] = $value;
+        $dest[$key] = Charset::convert($value, 'UTF-8');
       }
     }
     return ($dest);

@@ -1,5 +1,6 @@
 <?php
 
+require dirname(__FILE__).'/../utils/charset.php';
 require dirname(__FILE__).'/../json/parser.php';
 require dirname(__FILE__).'/../json/error.php';
 require dirname(__FILE__).'/../collections/core.php';

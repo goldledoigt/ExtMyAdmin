@@ -15,6 +15,7 @@ class JsonParser {
    * @param string Json encoded data
    */
   public static function encode($data) {
+    $data = Charset::convert($data, 'UTF-8');
     return (json_encode($data));
   }
 
@@ -27,7 +28,7 @@ class JsonParser {
    * @param mixed PHP data
    */
   public static function decode($str='') {
-    $str = mb_convert_encoding($str, 'UTF-8');
+    $str = Charset::convert($str, 'UTF-8');
     return (json_decode($str, true));
   }
 }
