@@ -13,12 +13,14 @@ abstract class MysqlApi extends IDatabase {
    * Return database schemas.
    *
    * @method get_databases
-   * @param string $database Database name
    * @return array Results
    */
-  public function get_databases($database='information_schema') {
+  public function get_databases() {
     $query = Format::set('SHOW DATABASES');
     $databases = $this->gets_row($query, array('name'));
+    foreach ($databases as &$database) {
+      $database = new Database($database);
+    }
     return ($databases);
   }
 
@@ -29,9 +31,12 @@ abstract class MysqlApi extends IDatabase {
    * @param string $database Database name
    * @return array Results
    */
-  public function get_tables($database='information_schema') {
+  public function get_tables($database) {
     $query = Format::set('SHOW TABLES FROM `%s`', $database);
     $tables = $this->gets_row($query, array('name'));
+    foreach ($tables as &$table) {
+      $table = new Table($table);
+    }
     return ($tables);
   }
 

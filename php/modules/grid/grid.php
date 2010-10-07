@@ -20,31 +20,31 @@ class GridModule extends IModule {
    * Read action method.
    *
    * @method callable_read
-   * @param string $database Database name
-   * @param string $table Table name
+   * @param string $database_name Database name
+   * @param string $table_name Table name
    * @param string $start Start offset
    * @param string $limit Number of items
    * @param string $order_column Order column name
    * @param string $order_type Order type (ASC, DESC)
    * @return array Results
    */
-  public function callable_read($database, $table, $start, $limit, $order_field, $order_dir) {
+  public function callable_read($database_name, $table_name, $start, $limit, $order_field, $order_dir) {
     $result = array();
-    $table = str_replace('table/', '', $table);
-    $database = str_replace('schema/', '', $database);
-    $columns = $this->get_db()->get_columns($database, $table);
+    $host = new Host();
+    $table = $host->get_database($database_name)->get_table($table_name);
+    $columns = $table->get_columns();
     $opt = array('direction' => $order_dir,
                  'field' => $order_field);
-    $primary = $this->_get_primary_key($columns);
+    $primary = $table->get_primary_key();
     if (empty($opt['field'])) {
       $opt['field'] = $primary->get('name');
       $opt['direction'] = 'ASC';
     }
-    $data = $this->get_db()->get_data($database, $table, $start, $limit, $opt['field'], $opt['direction']);
-    $results = array('columns' => $this->_format_columns($columns),
-                     'count' => $this->get_db()->get_count($database, $table),
+    $data = $table->select($start, $limit, $opt['field'], $opt['direction']);
+    $results = array('columns' => $this->_format_columns($table),
+                     'count' => $table->count(),
                      'rows' => $data,
-                     'metaData' => $this->_format_metadata($columns, $opt),
+                     'metaData' => $this->_format_metadata($table, $opt),
                      'success' => true);
     return ($results);
   }
@@ -53,18 +53,18 @@ class GridModule extends IModule {
    * Format metadata for grid.
    *
    * @method _format_metadata
-   * @param array $columns Columns
+   * @param Table $table Table
    * @param array $opt Options
    * @return array Metadata
    */
-  protected function _format_metadata(array $columns, array $opt=array()) {
+  protected function _format_metadata($table, array $opt=array()) {
     $metadata = array('fields' => array(),
-                      'idProperty' => $this->_get_primary_key($columns)->get('name'),
+                      'idProperty' => '',//$table->get_primary_key()->get('name'),
                       'root' => 'rows',
                       'successProperty' => 'success',
                       'totalProperty' => 'count',
                       'sortInfo' => $opt);
-    foreach ($columns as $column) {
+    foreach ($table->get_columns() as $column) {
       $metadata['fields'][] = array('name' => $column->get('name'),
                                     'type' => $column->get('type'));
     }
@@ -72,39 +72,18 @@ class GridModule extends IModule {
   }
 
   /**
-   * Return primary key from columns.
-   *
-   * @method _get_primary_key
-   * @param array $columns Columns
-   * @return Column Column
-   */
-  protected function _get_primary_key(array $columns) {
-    $primary = null;
-    foreach ($columns as $column) {
-      if ($column->get('key') == 'PRI') {
-        $primary = $column;
-      }
-    }
-    if (empty($primary)) {
-      return ($columns[0]);
-    }
-    return ($primary);
-  }
-
-  /**
    * Format columns for grid.
    *
    * @method _format_columns
-   * @param array $columns
+   * @param Table $table Table
    * @return array Results
    */
-  protected function _format_columns(array $columns) {
+  protected function _format_columns($table) {
     $results = array();
-    $primary = $this->_get_primary_key($columns);
-    foreach ($columns as $column) {
+    foreach ($table->get_columns() as $column) {
       $results[] = array('align' => 'right',
                          'dataIndex' => $column->get('name'),
-                         'editable' => ($column->get('name') === $primary->get('name') ? false : true),
+                         'editable' => $table->is_primary_key($column),
                          'editor' => array('xtype' => $column->get_xtype()),
                          'format' => '0',
                          'header' => $column->get_header(),

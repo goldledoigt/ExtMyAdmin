@@ -42,20 +42,12 @@ class Controller extends JsonError {
   private $__results;
 
   /**
-   * Database instance.
-   *
-   * @property Database $__db
-   */
-  private $__db;
-
-  /**
    * Controller constructor.
    *
    * @constructor
    * @param string $raw_input Raw json string input
    */
   public function __construct($raw_input='') {
-    $this->__db = new Database();
     $this->__raw_input = $raw_input;
     $this->__modules = array();
     $this->__results = array();
@@ -172,7 +164,7 @@ class Controller extends JsonError {
       }
     }
     if (class_exists($class_name)) {
-      $this->__modules[$module_name] = new $class_name($this->__db);
+      $this->__modules[$module_name] = new $class_name();
       return (true);
     }
     return (false);

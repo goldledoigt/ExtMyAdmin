@@ -32,7 +32,8 @@ class TreeModule extends IModule {
    */
   public function callable_read_database($database='', $schema='', $new=false) {
     $nodes = array();
-    $databases = $this->get_db()->get_databases($database);
+    $host = new Host();
+    $databases = $host->get_databases();
     foreach ($databases as $database) {
       $nodes[] = $this->_format_result($database, 'schema');
     }
@@ -50,8 +51,9 @@ class TreeModule extends IModule {
    */
   public function callable_read_schema($database='', $schema='', $new=false) {
     $nodes = array();
-    $database = str_replace('schema/', '', $database);
-    $tables = $this->get_db()->get_tables($database);
+    $host = new Host();
+    $tables = $host->get_database($database)
+      ->get_tables();
     foreach ($tables as $table) {
       $nodes[] = $this->_format_result($table, 'table');
     }
@@ -69,11 +71,12 @@ class TreeModule extends IModule {
    */
   public function callable_read_table($table='', $database='', $new=false) {
     $nodes = array();
-    $table = str_replace('table/', '', $table);
-    $database = str_replace('schema/', '', $database);
-    $columns = $this->get_db()->get_columns($database, $table);
+    $host = new Host();
+    $columns = $host->get_database($database)
+      ->get_table($table)
+      ->get_columns();
     foreach ($columns as $column) {
-      $nodes[] = $this->_format_result($column->gets(), 'column', true);
+      $nodes[] = $this->_format_result($column, 'column', true);
     }
     return ($nodes);
   }
@@ -82,15 +85,15 @@ class TreeModule extends IModule {
    * Return result formated.
    *
    * @method _format_result
-   * @param array $results Result
+   * @param mixed $results Result
    * @param string $type Type of result
    * @param boolean $leaf Leaf parameter
    * @return array Result formated
    */
-  protected function _format_result(array $result, $type, $leaf=false) {
+  protected function _format_result($result, $type, $leaf=false) {
     return (array('type' => $type,
-                  'id' => $type.'/'.$result['name'],
-                  'text' => $result['name'],
+                  'id' => $result->get('name'),
+                  'text' => $result->get('name'),
                   'iconCls' => 'icon-node-'.$type,
                   'leaf' => $leaf));
   }

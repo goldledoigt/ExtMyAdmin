@@ -7,33 +7,6 @@
  */
 abstract class IModule extends JsonError {
   /**
-   * Database.
-   *
-   * @property Database $_db
-   */
-  protected $_db;
-
-  /**
-   * Module interface constructor.
-   *
-   * @constructor
-   * @param Database $database Database instance
-   */
-  public function __construct($database) {
-    $this->_db = $database;
-  }
-
-  /**
-   * Return Database instance.
-   *
-   * @method get_db
-   * @return Database Module database instance
-   */
-  public function get_db() {
-    return ($this->_db);
-  }
-
-  /**
    * Call module method.
    *
    * @method call

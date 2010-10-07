@@ -48,6 +48,16 @@ abstract class IDatabase extends JsonError {
   }
 
   /**
+   * Close current object connection to database.
+   *
+   * @destructor
+   * @method __destruct
+   */
+  public function __destruct() {
+    $this->close();
+  }
+
+  /**
    * Merge the source array by replacing keys, values pair.
    *
    * @method merge
@@ -68,23 +78,12 @@ abstract class IDatabase extends JsonError {
   }
 
   /**
-   * Close current object connection to database.
-   *
-   * @destructor
-   * @method __destruct
-   */
-  public function __destruct() {
-    $this->close();
-  }
-
-  /**
    * Get database schemas.
    *
    * @abstract
    * @method get_databases
-   * @param string $database Database name
    */
-  abstract public function get_databases($database);
+  abstract public function get_databases();
 
   /**
    * Return database tables.

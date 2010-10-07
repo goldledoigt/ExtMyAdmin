@@ -4,11 +4,11 @@ require dirname(__FILE__).'/format.php';
 require dirname(__FILE__).'/interface.php';
 
 /**
- * Database class.
+ * Database Abstraction Layer class.
  *
- * @class Database
+ * @class DB
  */
-class Database extends JsonError {
+class DB extends JsonError {
   /**
    * MySQL database constant.
    *
@@ -24,12 +24,21 @@ class Database extends JsonError {
   protected $_database_class;
 
   /**
+   * Private instance store.
+   *
+   * @private
+   * @property DB $__instance
+   */
+  private static $__instance;
+
+  /**
    * new database()
    *
+   * @private
    * @constructor
    * @param Database::const $class_name Class name
    */
-  public function __construct($class_name='') {
+  private function __construct($class_name='') {
     if (empty($class_name) and
         defined('settings::database_class')) {
       $class_name = constant('settings::database_class');
@@ -41,6 +50,15 @@ class Database extends JsonError {
     if ($this->_set_database_instance($class_name) === false) {
       $this->_show_error('This classname database does not exists "'.$class_name.'"');
     }
+  }
+
+  /**
+   * Disable external clone.
+   *
+   * @private
+   * @method __clone
+   */
+  private function __clone() {
   }
 
   /**
@@ -57,6 +75,20 @@ class Database extends JsonError {
       $this->_show_error('DATABASE Method does not exists "'.$name.'"');
     }
     return (call_user_func_array(array($this->_database_class, $name), $args));
+  }
+
+  /**
+   * Return instance of DB.
+   *
+   * @static
+   * @method get
+   * @param string $class_name Class name
+   */
+  public static function get($class_name='') {
+    if (!(self::$__instance instanceof self)) {
+      self::$__instance = new self($class_name);
+    }
+    return (self::$__instance);
   }
 
   /**
