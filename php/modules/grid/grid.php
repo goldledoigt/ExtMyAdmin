@@ -59,7 +59,7 @@ class GridModule extends IModule {
    */
   protected function _format_metadata($table, array $opt=array()) {
     $metadata = array('fields' => array(),
-                      'idProperty' => '',//$table->get_primary_key()->get('name'),
+                      'idProperty' => $table->get_primary_key()->get('name'),
                       'root' => 'rows',
                       'successProperty' => 'success',
                       'totalProperty' => 'count',

@@ -103,4 +103,26 @@ abstract class IDatabase extends JsonError {
    * @return array Results
    */
   abstract public function get_columns($database, $table);
+
+  /**
+   * Get data from database, table.
+   *
+   * @method get_data
+   * @param string $database Database name
+   * @param string $table Table name
+   * @param int $start Start value
+   * @param int $num Limit value
+   * @return array Results
+   */
+  abstract public function get_data($database, $table, $start, $num, $order_column, $order_type);
+
+  /**
+   * Return count of last executed query.
+   *
+   * @method get_count
+   * @param string $database Database name
+   * @param string $table Table name
+   * @return mixed False if failed else query rows number
+   */
+  abstract public function get_count($database, $table);
 }
