@@ -12,6 +12,8 @@ abstract class IModule extends JsonError {
    * @method call
    * @param string $method Method name
    * @param array $args Arguments
+   * @return mixed Error if method does not exists (or not callable),
+   * else method result.
    */
   public function call($method, array $args) {
     $method = 'callable_'.basename($method);

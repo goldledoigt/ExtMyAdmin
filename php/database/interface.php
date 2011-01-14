@@ -78,6 +78,14 @@ abstract class IDatabase extends JsonError {
   }
 
   /**
+   * Create given database name.
+   *
+   * @method add_database
+   * @return boolean True if succeed else false
+   */
+  abstract public function add_database($database);
+
+  /**
    * Get database schemas.
    *
    * @abstract

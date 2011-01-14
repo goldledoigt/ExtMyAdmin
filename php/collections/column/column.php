@@ -11,9 +11,9 @@ class Column extends ICollection {
    * Column constructor.
    *
    * @constructor
-   * @param array $values Values
+   * @param array $values Values. Defaults to empty array.
    */
-  public function __construct(array $values) {
+  public function __construct(array $values=array()) {
     $this->set_design(array('name',
                             'type',
                             'length',

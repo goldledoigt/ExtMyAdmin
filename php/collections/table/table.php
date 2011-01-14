@@ -11,9 +11,9 @@ class Table extends ICollection {
    * Table constructor.
    *
    * @constructor
-   * @param array $values Values
+   * @param array $values Values. Defaults to empty array.
    */
-  public function __construct(array $values) {
+  public function __construct(array $values=array()) {
     $this->set_design(array('name',
                             'columns',
                             'database'));
@@ -95,6 +95,19 @@ class Table extends ICollection {
                                          $this->get('name'),
                                          $start, $limit, $field, $direction);
     return ($results);
+  }
+
+  /**
+   * Rename table to given table name.
+   *
+   * @method rename
+   * @param string $new_table_name New table name
+   * @return boolean True if succeed else false
+   */
+  public function rename($new_table_name) {
+    return ($this->get_db()->rename_table($this->get('database')->get('name'),
+                                          $this->get('name'),
+                                          $new_table_name));
   }
 
   /**

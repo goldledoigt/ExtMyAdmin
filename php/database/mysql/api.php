@@ -10,6 +10,18 @@ require dirname(__FILE__).'/column/column.php';
  */
 abstract class MysqlApi extends IDatabase {
   /**
+   * Create given database name.
+   *
+   * @method add_database
+   * @return boolean True if succeed else false
+   */
+  public function add_database($database) {
+    $query = Format::set('CREATE DATABASE `%s`', $database);
+    $result = $this->execute($query);
+    return ($result);
+  }
+
+  /**
    * Return database schemas.
    *
    * @method get_databases
@@ -97,5 +109,33 @@ abstract class MysqlApi extends IDatabase {
                          $database, $table);
     $query = $this->execute($query);
     return ($this->get_num());
+  }
+
+  /**
+   * Rename old table name to new table name.
+   *
+   * @method rename_table
+   * @param string $database Database name
+   * @param string $old_table Old table name
+   * @param string $new_table New table name
+   */
+  public function rename_table($database, $old_table, $new_table) {
+    $query = Format::set('RENAME TABLE `%s`.`%s` TO `%s`.`%s`',
+                         $database, $old_table, $database, $new_table);
+    $query = $this->execute($query);
+    return ($query);
+  }
+
+  /**
+   * Drop given database.
+   *
+   * @method drop_database
+   * @param string $database Database name
+   * @return boolean True if succeed else false
+   */
+  public function drop_database($database) {
+    $query = Format::set('DROP DATABASE `%s`', $database);
+    $query = $this->execute($query);
+    return ($query);
   }
 }

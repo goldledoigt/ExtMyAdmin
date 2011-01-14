@@ -11,11 +11,11 @@ class Database extends ICollection {
    * Database constructor.
    *
    * @constructor
-   * @param array $values Values
+   * @param array $values Values. Defaults to empty array.
    */
-  public function __construct(array $values) {
+  public function __construct(array $values=array()) {
     $this->set_design(array('name',
-                            'database',
+                            'host',
                             'tables'));
     foreach ($this->get_design() as $key) {
       $this->set($key, $values);
@@ -77,10 +77,35 @@ class Database extends ICollection {
   public function get_table($table_name) {
     $tables = $this->get_tables();
     if (empty($tables[$table_name])) {
-      $table = new Table($table_name);
+      $table = new Table(array('name' => $table_name));
       $tables = $this->set_tables($tables +
                                   array($table_name => $table));
     }
     return ($tables[$table_name]);
+  }
+
+  /**
+   * Add table to current database.
+   *
+   * @todo
+   * @method add_table
+   * @param string $table_name Table name
+   * @return boolean True if succeed else false
+   */
+  public function add_table($table_name) {
+    $table = $this->get_table($table_name);
+    var_dump($table);
+    exit(1);
+  }
+
+  /**
+   * Drop this database.
+   *
+   * @method drop
+   * @return boolean True if succeed else false
+   */
+  public function drop() {
+    $name = $this->get('name');
+    return ($this->get_db()->drop_database($name));
   }
 }

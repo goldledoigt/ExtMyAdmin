@@ -31,6 +31,7 @@ class GridModule extends IModule {
   public function callable_read($database_name, $table_name, $start, $limit, $order_field, $order_dir) {
     $result = array();
     $host = new Host();
+    $table_name = substr($table_name, strpos($table_name, '/') + 1);
     $table = $host->get_database($database_name)->get_table($table_name);
     $columns = $table->get_columns();
     $opt = array('direction' => $order_dir,

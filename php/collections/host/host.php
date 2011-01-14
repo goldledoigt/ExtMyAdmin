@@ -59,12 +59,37 @@ class Host extends ICollection {
    * @return Database Database
    */
   public function get_database($database_name) {
-    $databases = $this->get_databases();
-    if (empty($databases[$database_name])) {
-      $database = new Database($database_name);
-      $databases = $this->set_databases($databases +
-                                        array($database_name => $database));
+    if ($this->has_database($database_name) === true) {
+      $databases = $this->get_databases();
+      return ($databases[$database_name]);
     }
-    return ($databases[$database_name]);
+    return (false);
+  }
+
+  /**
+   * Check if database exists.
+   *
+   * @method has_database
+   * @param string $database_name Database name
+   * @return boolean True if database exists else false.
+   */
+  public function has_database($database_name) {
+    $databases = $this->get_databases();
+    return (!empty($databases[$database_name]));
+  }
+
+  /**
+   * Add database to current host.
+   *
+   * @method add_database
+   * @param string $database_name Database name
+   * @return boolean True if succeed else false
+   */
+  public function add_database($database_name) {
+    $database = $this->has_database($database_name);
+    if ($database === false) {
+      return ($this->get_db()->add_database($database_name));
+    }
+    return (false);
   }
 }
