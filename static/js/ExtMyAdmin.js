@@ -12,18 +12,20 @@ ExtMyAdmin.App = Ext.extend(Ext.util.Observable, {
 			exception:this.onServerException
 			,message:this.onServerMessage
 		});
-		
+
+		ExtMyAdmin.Message.init();
+
 		Ext.QuickTips.init();
 		
 		this.viewport = this.getViewport();
 	}
 
-	,onServerException:function() {
-		console.log("onServerException", this, arguments);
+	,onServerException:function(e) {
+		ExtMyAdmin.Message.error(e.data);
 	}
 
-	,onServerMessage:function() {
-		console.log("onServerMessage", this, arguments);
+	,onServerMessage:function(e) {
+		ExtMyAdmin.Message.info(e.data);
 	}
 
 	,getViewport:function() {

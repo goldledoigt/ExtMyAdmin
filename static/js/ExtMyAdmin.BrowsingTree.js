@@ -28,9 +28,6 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
 						loader.baseParams.schema = "";
 					}
 				}
-				,loadexception:function() {
-					console.log("loadexception", this, arguments);
-				}
 			}
         });
 
@@ -54,7 +51,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
 
 	,onRender:function() {
 		ExtMyAdmin.BrowsingTree.superclass.onRender.apply(this, arguments);
-		console.log("onRender", this, arguments);
+		this.loadMask = new Ext.LoadMask(this.body, {msg:"Loading..."});
 	}
 
     ,onNodeClick:function(node) {
@@ -122,9 +119,11 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
     ,addSchema:function(node) {
         var ajaxCallback = function(result, response) {
             this.getRootNode().appendChild([result]);
+			this.loadMask.hide();
         };
         var promptCallback = function(response, value, options) {
             if (response === "ok" && value.length) {
+				this.loadMask.show();
                 tree.create(value, "database", 'host', ajaxCallback.createDelegate(this));
             }
         };

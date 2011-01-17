@@ -45,7 +45,7 @@
 		<script type="text/javascript" src="static/js/ExtMyAdmin.TableGrid.js"></script>
 		<script type="text/javascript" src="static/js/ExtMyAdmin.EditTableGrid.js"></script>
 		<script type="text/javascript" src="static/js/ExtMyAdmin.BrowsingTree.js"></script>
-		<script type="text/javascript" src="static/js/main.js"></script>
+		<script type="text/javascript" src="static/js/ExtMyAdmin.js"></script>
 	</body>
 
 </html>
