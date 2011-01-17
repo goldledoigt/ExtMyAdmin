@@ -48,6 +48,18 @@ class Table extends ICollection {
   }
 
   /**
+   * Drop this table.
+   *
+   * @method drop
+   * @return boolean True if succeed else false
+   */
+  public function drop() {
+    $name = $this->get('name');
+    $db = $this->get('database');
+    return ($this->get_db()->drop_table($db->get('name'), $name));
+  }
+
+  /**
    * Default columns setter.
    *
    * @method set_columns

@@ -169,7 +169,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         };
         var confirmCallback = function(response, value, options) {
             if (response === "yes") {
-                tree.destroy(node.id, node.type, node.parentNode.id, ajaxCallback.createDelegate(this));
+                tree.destroy(node.id, "table", node.parentNode.id, ajaxCallback.createDelegate(this));
             }
         };
         Ext.MessageBox.confirm(

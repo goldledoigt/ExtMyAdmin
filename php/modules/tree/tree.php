@@ -11,15 +11,61 @@ class TreeModule extends IModule {
    * Destroy given database.
    *
    * @method callable_destroy
-   * @param string $node Node
-   * @param string $type Type
-   * @param string $database Database
+   * @param string $name Node name.
+   * @param string $type Node type.
+   * @param string $parent Parent node name.
    * @return boolean True if succeed else false
    */
-  public function callable_destroy($node='', $type='', $database='') {
+  public function callable_destroy($name='', $type='', $parent='') {
+    return ($this->call('destroy_'.$type, array($name, $parent)));
+  }
+
+  /**
+   * Destroy given database.
+   *
+   * @method callable_destroy_database
+   * @param string $database Database name.
+   * @param string $host Host name.
+   * @return boolean True if succeed else false.
+   */
+  public function callable_destroy_database($database='', $host='') {
     $host = new Host();
     $db = $host->get_database($database);
+    if (empty($db)) {
+      return (array('success' => false,
+                    'msg' => 'Database does not exist'));
+    }
     return ($db->drop());
+  }
+
+  /**
+   * Destroy given table from database.
+   *
+   * @todo
+   * @method callable_destroy_table
+   * @param string $table Table name.
+   * @param string $database Database name.
+   * @return boolean True if succeed else false.
+   */
+  public function callable_destroy_table($table='', $database='') {
+    if (empty($table)) {
+      return (array('success' => false,
+                    'msg' => 'No table given.'));
+    }
+    $table = explode('/', $table);
+    $table = $table[count($table) - 1];
+    $host = new Host();
+    $db = $host->get_database($database);
+    if (empty($db)) {
+      return (array('success' => false,
+                    'msg' => 'Database does not exist'));
+    }
+    $tb = $db->get_table($table);
+    if (empty($tb)) {
+      return (array('success' => false,
+                    'msg' => 'Table does not exists'));
+    }
+    return ($tb->drop());
   }
 
   /**

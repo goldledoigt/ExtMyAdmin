@@ -138,4 +138,17 @@ abstract class MysqlApi extends IDatabase {
     $query = $this->execute($query);
     return ($query);
   }
+
+  /**
+   * Drop given table.
+   *
+   * @method drop_table
+   * @param string $table Table name
+   * @return boolean True if succeed else false
+   */
+  public function drop_table($database, $table) {
+    $query = Format::set('DROP TABLE `%s`.`%s`', $database, $table);
+    $query = $this->execute($query);
+    return ($query);
+  }
 }
