@@ -75,13 +75,23 @@ class Database extends ICollection {
    * @return Table Table
    */
   public function get_table($table_name) {
-    $tables = $this->get_tables();
-    if (empty($tables[$table_name])) {
-      $table = new Table(array('name' => $table_name));
-      $tables = $this->set_tables($tables +
-                                  array($table_name => $table));
+    if ($this->has_table($table_name) === true) {
+      $tables = $this->get_tables();
+      return ($tables[$table_name]);
     }
-    return ($tables[$table_name]);
+    return (false);
+  }
+
+  /**
+   * Check if table exists.
+   *
+   * @method has_table
+   * @param string $table_name Table name.
+   * @return boolean True if table exists else false.
+   */
+  public function has_table($table_name) {
+    $tables = $this->get_tables();
+    return (!empty($tables[$table_name]));
   }
 
   /**
@@ -93,9 +103,11 @@ class Database extends ICollection {
    * @return boolean True if succeed else false
    */
   public function add_table($table_name) {
-    $table = $this->get_table($table_name);
-    var_dump($table);
-    exit(1);
+    $table = $this->has_table($table_name);
+    if ($table === false) {
+      return ($this->get_db()->add_table($this->get('name'), $table_name));
+    }
+    return (false);
   }
 
   /**

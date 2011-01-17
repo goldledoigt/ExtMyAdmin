@@ -11,15 +11,57 @@ class TreeModule extends IModule {
    * Destroy given database.
    *
    * @method callable_destroy
-   * @param string $node Node
-   * @param string $type Type
-   * @param string $database Database
+   * @param string $name Node name.
+   * @param string $type Node type.
+   * @param string $parent Parent node name.
    * @return boolean True if succeed else false
    */
-  public function callable_destroy($node='', $type='', $database='') {
+  public function callable_destroy($name='', $type='', $parent='') {
+    return ($this->call('destroy_'.$type, array($name, $parent)));
+  }
+
+  /**
+   * Destroy given database.
+   *
+   * @method callable_destroy_database
+   * @param string $database Database name.
+   * @param string $host Host name.
+   * @return boolean True if succeed else false.
+   */
+  public function callable_destroy_database($database='', $host='') {
     $host = new Host();
     $db = $host->get_database($database);
+    if (empty($db)) {
+      return ($this->error_event('Database does not exist'));
+    }
     return ($db->drop());
+  }
+
+  /**
+   * Destroy given table from database.
+   *
+   * @todo
+   * @method callable_destroy_table
+   * @param string $table Table name.
+   * @param string $database Database name.
+   * @return boolean True if succeed else false.
+   */
+  public function callable_destroy_table($table='', $database='') {
+    if (empty($table)) {
+      return ($this->error_event('No table given.'));
+    }
+    $table = explode('/', $table);
+    $table = $table[count($table) - 1];
+    $host = new Host();
+    $db = $host->get_database($database);
+    if (empty($db)) {
+      return ($this->error_event('Database does not exist'));
+    }
+    $tb = $db->get_table($table);
+    if (empty($tb)) {
+      return ($this->error_event('Table does not exists'));
+    }
+    return ($tb->drop());
   }
 
   /**
@@ -50,8 +92,7 @@ class TreeModule extends IModule {
       $d = $host->get_database($database);
       return ($this->_format_result($d, 'database'));
     }
-    return (array('success' => false,
-                  'msg' => 'Failed to add database.'));
+    return ($this->error_event('Failed to add database.'));
   }
 
   /**
@@ -70,8 +111,7 @@ class TreeModule extends IModule {
       $t = $db->get_table($table);
       return ($this->_format_result($t, 'table', $database.'/'));
     }
-    return (array('success' => false,
-                  'msg' => 'Failed to add table.'));
+    return ($this->error_event('Failed to add table.'));
   }
 
   /**
@@ -93,8 +133,7 @@ class TreeModule extends IModule {
                     'id' => $database_name.'/'.$new_table_name,
                     'text' => $new_table_name));
     }
-    return (array('success' => false,
-                  'msg' => 'Can\'t rename this table.'));
+    return ($this->error_event('Can\'t rename this table.'));
   }
 
   /**

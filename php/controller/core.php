@@ -98,8 +98,12 @@ class Controller extends JsonError {
       return (false);
     }
     $module = $this->get_module($request['action']);
-    $result = $module->call($request['method'], $request['data']);
-    return ($this->add_result($request, $result));
+    $mod_result = $module->call($request['method'], $request['data']);
+    $result = $this->add_result($request, $mod_result);
+    foreach ($module->get_events() as $event) {
+      $this->add_event($event);
+    }
+    return ($result);
   }
 
   /**
@@ -116,6 +120,26 @@ class Controller extends JsonError {
                                'tid' => $request['tid'],
                                'type' => $request['type'],
                                'result' => $result);
+    return (true);
+  }
+
+  /**
+   * Add event to results.
+   *
+   * @methos add_event
+   * @param array $event Event
+   * @return boolean True if succeed else false
+   */
+  public function add_event(array $event) {
+    if (empty($event['type']) or
+        empty($event['name']) or
+        empty($event['data'])) {
+      return (false);
+    }
+    $this->__results[] =
+      array('type' => $event['type'],
+            'name' => $event['name'],
+            'data' => $event['data']);
     return (true);
   }
 
@@ -164,7 +188,7 @@ class Controller extends JsonError {
       }
     }
     if (class_exists($class_name)) {
-      $this->__modules[$module_name] = new $class_name();
+      $this->__modules[$module_name] = new $class_name($this);
       return (true);
     }
     return (false);

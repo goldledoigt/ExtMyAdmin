@@ -87,7 +87,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
 
     ,getContextMenuItems:function(node) {
         var items, type = node.attributes.type;
-        if (type === "schema") {
+        if (type === "database") {
             items = [{
                 id:"addTable"
                 ,text:"Add new table"
@@ -177,7 +177,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         };
         var confirmCallback = function(response, value, options) {
             if (response === "yes") {
-                tree.destroy(node.id, node.type, node.parentNode.id, ajaxCallback.createDelegate(this));
+                tree.destroy(node.id, "table", node.parentNode.id, ajaxCallback.createDelegate(this));
             }
         };
         Ext.MessageBox.confirm(
