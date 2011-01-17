@@ -66,8 +66,8 @@ class Mysql extends MysqlApi {
    * @return mixed MySQL resource if succeed else false
    */
   public function execute($query) {
-    $sql = 'SET NAMES \'utf8\'';
-    mysql_query($sql, $this->__link);
+    // $sql = 'SET NAMES \'utf8\'';
+    // mysql_query($sql, $this->__link);
     if ($result = mysql_query($query, $this->__link)) {
       $this->__query = $result;
       return ($result);
