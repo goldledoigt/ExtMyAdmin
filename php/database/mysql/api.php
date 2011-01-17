@@ -37,6 +37,23 @@ abstract class MysqlApi extends IDatabase {
   }
 
   /**
+   * Create given table name into database.
+   *
+   * @method add_table
+   * @return boolean True if succeed else false
+   */
+  public function add_table($database, $table) {
+    $query = Format::set('CREATE TABLE  `%s`.`%s` ('.
+                         '`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,'.
+                         'PRIMARY KEY (`id`),'.
+                         'INDEX ( `id`)'.
+                         ') ENGINE = MYISAM;',
+                         $database, $table);
+    $result = $this->execute($query);
+    return ($result);
+  }
+
+  /**
    * Return database tables.
    *
    * @method get_tables

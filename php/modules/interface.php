@@ -22,4 +22,16 @@ abstract class IModule extends JsonError {
     }
     return ($this->get_error('This action is not avalaible.'));
   }
+
+  /**
+   * Format and return error msg.
+   *
+   * @method error
+   * @param string $msg Error message.
+   * @return array JSON formated error message.
+   */
+  public function error($msg) {
+    return (array('success' => false,
+                  'msg' => $msg));
+  }
 }

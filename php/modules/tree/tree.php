@@ -32,8 +32,7 @@ class TreeModule extends IModule {
     $host = new Host();
     $db = $host->get_database($database);
     if (empty($db)) {
-      return (array('success' => false,
-                    'msg' => 'Database does not exist'));
+      return ($this->error('Database does not exist'));
     }
     return ($db->drop());
   }
@@ -49,21 +48,18 @@ class TreeModule extends IModule {
    */
   public function callable_destroy_table($table='', $database='') {
     if (empty($table)) {
-      return (array('success' => false,
-                    'msg' => 'No table given.'));
+      return ($this->error('No table given.'));
     }
     $table = explode('/', $table);
     $table = $table[count($table) - 1];
     $host = new Host();
     $db = $host->get_database($database);
     if (empty($db)) {
-      return (array('success' => false,
-                    'msg' => 'Database does not exist'));
+      return ($this->error('Database does not exist'));
     }
     $tb = $db->get_table($table);
     if (empty($tb)) {
-      return (array('success' => false,
-                    'msg' => 'Table does not exists'));
+      return ($this->error('Table does not exists'));
     }
     return ($tb->drop());
   }
@@ -96,8 +92,7 @@ class TreeModule extends IModule {
       $d = $host->get_database($database);
       return ($this->_format_result($d, 'database'));
     }
-    return (array('success' => false,
-                  'msg' => 'Failed to add database.'));
+    return ($this->error('Failed to add database.'));
   }
 
   /**
@@ -116,8 +111,7 @@ class TreeModule extends IModule {
       $t = $db->get_table($table);
       return ($this->_format_result($t, 'table', $database.'/'));
     }
-    return (array('success' => false,
-                  'msg' => 'Failed to add table.'));
+    return ($this->error('Failed to add table.'));
   }
 
   /**
@@ -139,8 +133,7 @@ class TreeModule extends IModule {
                     'id' => $database_name.'/'.$new_table_name,
                     'text' => $new_table_name));
     }
-    return (array('success' => false,
-                  'msg' => 'Can\'t rename this table.'));
+    return ($this->error('Can\'t rename this table.'));
   }
 
   /**

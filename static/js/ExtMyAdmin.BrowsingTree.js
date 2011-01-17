@@ -79,7 +79,7 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
 
     ,getContextMenuItems:function(node) {
         var items, type = node.attributes.type;
-        if (type === "schema") {
+        if (type === "database") {
             items = [{
                 id:"addTable"
                 ,text:"Add new table"
