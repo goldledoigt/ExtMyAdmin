@@ -65,7 +65,7 @@ abstract class IModule extends JsonError {
    * @return string $return variable.
    */
   public function error_event($msg, $return=array()) {
-    $this->event($msg);
+    $this->event($msg, 'event', 'exception');
     return ($return);
   }
 

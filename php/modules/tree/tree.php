@@ -50,18 +50,23 @@ class TreeModule extends IModule {
     if (empty($table)) {
       return ($this->error_event('No table given.'));
     }
-    $table = explode('/', $table);
-    $table = $table[count($table) - 1];
     $host = new Host();
     $db = $host->get_database($database);
     if (empty($db)) {
       return ($this->error_event('Database does not exist'));
     }
+    $table = explode('/', $table);
+    $table = $table[count($table) - 1];
     $tb = $db->get_table($table);
     if (empty($tb)) {
       return ($this->error_event('Table does not exists'));
     }
-    return ($tb->drop());
+    $result = $tb->drop();
+    if ($result) {
+      $this->event('Table dropped successfully.');
+      return ($result);
+    }
+    return ($this->error_event('Failed to drop table.', $result));
   }
 
   /**
@@ -119,16 +124,24 @@ class TreeModule extends IModule {
    *
    * @method callable_update
    * @param string $old_table_name Old table name
-   * @param string $type Type
    * @param string $database_name Database name
    * @param string $new_table_name New table name
    * @return boolean True if succeed else false
    */
-  public function callable_update($old_table_name='', $type='', $database_name='', $new_table_name='') {
+  public function callable_update($old_table_name='', $database_name='', $new_table_name='') {
     $host = new Host();
-    $table = $host->get_database($database_name)->get_table($old_table_name);
-    $result = $table->rename($new_table_name);
+    $db = $host->get_database($database_name);
+    if (empty($db)) {
+      return ($this->error_event('Given database does not exists'));
+    }
+    $tb = $db->get_table($old_table_name);
+    if (empty($tb)) {
+      return ($this->error_event('Given table does not exists'));
+    }
+    $result = $tb->rename($new_table_name);
     if ($result === true) {
+      $this->event('Success to rename table `'.$old_table_name.'` to `'.
+                   $new_table_name.'`');
       return (array('success' => true,
                     'id' => $database_name.'/'.$new_table_name,
                     'text' => $new_table_name));
