@@ -56,6 +56,7 @@ class Mysql extends MysqlApi {
     $this->__link = mysql_connect($this->_db_host, $this->_db_user,
                                   $this->_db_pass) or
       $this->_show_error('cannot connect');
+    mysql_set_charset('utf8', $this->__link);
   }
 
   /**
@@ -66,8 +67,6 @@ class Mysql extends MysqlApi {
    * @return mixed MySQL resource if succeed else false
    */
   public function execute($query) {
-    // $sql = 'SET NAMES \'utf8\'';
-    // mysql_query($sql, $this->__link);
     if ($result = mysql_query($query, $this->__link)) {
       $this->__query = $result;
       return ($result);
@@ -141,7 +140,10 @@ class Mysql extends MysqlApi {
    * @method close
    */
   public function close() {
-    return (mysql_close($this->__link) or
-            $this->_show_error('cannot close connection'));
+    if (empty($this->__link) === false) {
+      return (mysql_close($this->__link) or
+              $this->_show_error('cannot close connection'));
+    }
+    return (false);
   }
 }

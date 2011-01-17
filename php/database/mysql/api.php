@@ -10,15 +10,29 @@ require dirname(__FILE__).'/column/column.php';
  */
 abstract class MysqlApi extends IDatabase {
   /**
+   * Create given database name.
+   *
+   * @method add_database
+   * @return boolean True if succeed else false
+   */
+  public function add_database($database) {
+    $query = Format::set('CREATE DATABASE `%s`', $database);
+    $result = $this->execute($query);
+    return ($result);
+  }
+
+  /**
    * Return database schemas.
    *
    * @method get_databases
-   * @param string $database Database name
    * @return array Results
    */
-  public function get_databases($database='information_schema') {
+  public function get_databases() {
     $query = Format::set('SHOW DATABASES');
     $databases = $this->gets_row($query, array('name'));
+    foreach ($databases as &$database) {
+      $database = new Database($database);
+    }
     return ($databases);
   }
 
@@ -29,9 +43,12 @@ abstract class MysqlApi extends IDatabase {
    * @param string $database Database name
    * @return array Results
    */
-  public function get_tables($database='information_schema') {
+  public function get_tables($database) {
     $query = Format::set('SHOW TABLES FROM `%s`', $database);
     $tables = $this->gets_row($query, array('name'));
+    foreach ($tables as &$table) {
+      $table = new Table($table);
+    }
     return ($tables);
   }
 
@@ -92,5 +109,33 @@ abstract class MysqlApi extends IDatabase {
                          $database, $table);
     $query = $this->execute($query);
     return ($this->get_num());
+  }
+
+  /**
+   * Rename old table name to new table name.
+   *
+   * @method rename_table
+   * @param string $database Database name
+   * @param string $old_table Old table name
+   * @param string $new_table New table name
+   */
+  public function rename_table($database, $old_table, $new_table) {
+    $query = Format::set('RENAME TABLE `%s`.`%s` TO `%s`.`%s`',
+                         $database, $old_table, $database, $new_table);
+    $query = $this->execute($query);
+    return ($query);
+  }
+
+  /**
+   * Drop given database.
+   *
+   * @method drop_database
+   * @param string $database Database name
+   * @return boolean True if succeed else false
+   */
+  public function drop_database($database) {
+    $query = Format::set('DROP DATABASE `%s`', $database);
+    $query = $this->execute($query);
+    return ($query);
   }
 }

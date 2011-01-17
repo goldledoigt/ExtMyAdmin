@@ -18,14 +18,14 @@ class Charset {
     if (is_array($data)) {
       foreach ($data as &$value) {
         if (is_string($value)) {
-          $value = mb_convert_encoding($value, 'UTF-8');
+          $value = mb_convert_encoding($value, $charset);
         }
         if (is_array($value)) {
           $value = self::convert($value);
         }
       }
     } else if (is_string($data)) {
-      $data = mb_convert_encoding($data, 'UTF-8');
+      $data = mb_convert_encoding($data, $charset);
     }
     return ($data);
   }

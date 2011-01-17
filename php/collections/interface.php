@@ -21,19 +21,39 @@ abstract class ICollection {
   protected $_design;
 
   /**
+   * Internal database instance.
+   *
+   * @property Database $__db
+   */
+  private $__db;
+
+  /**
+   * Return Database instance.
+   *
+   * @method get_db
+   * @return Database Module database instance
+   */
+  public function get_db() {
+    if (empty($this->__db)) {
+      $this->__db = DB::get();
+    }
+    return ($this->__db);
+  }
+
+  /**
    * Set design var value.
    *
    * @method set
    * @param string $name Var name
    * @param mixed $value Var value
-   * @return boolean True if succeed else false
+   * @return mixed Value if succeed else false
    */
   public function set($name, $value) {
     $method_name = '_set_'.$name;
     if ($this->__is_in_design($name) and
         method_exists($this, $method_name)) {
       $this->_vars[$name] = call_user_func(array($this, $method_name), $value);
-      return (true);
+      return ($this->_vars[$name]);
     }
     return (false);
   }
@@ -57,6 +77,13 @@ abstract class ICollection {
     return (null);
   }
 
+  /**
+   * Get design var html escaped value.
+   *
+   * @method gethtml
+   * @param string $name Var name
+   * @return mixed Var value escaped
+   */
   public function gethtml($name) {
     $value = $this->get($name);
     if (is_string($value)) {

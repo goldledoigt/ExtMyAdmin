@@ -6,14 +6,14 @@
  * @class Column
  * @extends ICollection
  */
-abstract class Column extends ICollection {
+class Column extends ICollection {
   /**
    * Column constructor.
    *
    * @constructor
-   * @param array $values Values
+   * @param array $values Values. Defaults to empty array.
    */
-  public function __construct(array $values) {
+  public function __construct(array $values=array()) {
     $this->set_design(array('name',
                             'type',
                             'length',
@@ -22,10 +22,34 @@ abstract class Column extends ICollection {
                             'null',
                             'key',
                             'default',
-                            'extra'));
+                            'extra',
+                            'table',
+                            'database'));
     foreach ($this->get_design() as $key) {
       $this->set($key, $values);
     }
+  }
+
+  /**
+   * Default database setter.
+   *
+   * @method _set_database
+   * @param Database $database Database
+   * @return Database Database
+   */
+  protected function _set_database($database) {
+    return ($database);
+  }
+
+  /**
+   * Default table setter.
+   *
+   * @method _set_table
+   * @param Table $table Table
+   * @return Table Table
+   */
+  protected function _set_table($table) {
+    return ($table);
   }
 
   /**
