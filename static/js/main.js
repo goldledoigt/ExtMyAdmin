@@ -1,63 +1,94 @@
-Ext.onReady( function() {
+Ext.ns("ExtMyAdmin");
 
-	Ext.Direct.addProvider(API);
+ExtMyAdmin.App = Ext.extend(Ext.util.Observable, {
+	
+	constructor:function() {
+		
+		ExtMyAdmin.App.superclass.constructor.apply(this, arguments);
+		
+		Ext.Direct.addProvider(API);
+		
+		Ext.Direct.on({
+			exception:this.onServerException
+			,message:this.onServerMessage
+		});
+		
+		Ext.QuickTips.init();
+		
+		this.viewport = this.getViewport();
+	}
 
-	Ext.QuickTips.init();
+	,onServerException:function() {
+		console.log("onServerException", this, arguments);
+	}
 
-	new Ext.Viewport({
-		layout:"border"
-		,items:[{
-			layout:"card"
-			,border:false
-			,activeItem:0
-			,ref:"cardLayer"
-			,region:"center"
-			,margins:"4 4 4 0"
+	,onServerMessage:function() {
+		console.log("onServerMessage", this, arguments);
+	}
+
+	,getViewport:function() {
+		return new Ext.Viewport({
+			layout:"border"
 			,items:[{
-				xtype:"tablegrid"
-				,ref:"../tableGrid"
-				,limit:28
-				,api:{
-	            	read:grid.read
-	            	,create:grid.create
-	            	,update:grid.update
-	            	,destroy:grid.destroy
-	          	}
+				layout:"card"
+				,border:false
+				,activeItem:0
+				,ref:"cardLayer"
+				,region:"center"
+				,margins:"4 4 4 0"
+				,items:[{
+					xtype:"tablegrid"
+					,ref:"../tableGrid"
+					,limit:28
+					,api:{
+		            	read:grid.read
+		            	,create:grid.create
+		            	,update:grid.update
+		            	,destroy:grid.destroy
+		          	}
+				}, {
+					xtype:"edittablegrid"
+					,ref:"../editTableGrid"
+					,limit:28
+					,api:{
+		            	read:editgrid.read
+		            	,create:editgrid.create
+		            	,update:editgrid.update
+		            	,destroy:editgrid.destroy
+		          	}
+				}]
+				,listeners:{
+					tableselect:function() {
+						this.getLayout().setActiveItem(0);
+					}
+					,tableedit:function() {
+						this.getLayout().setActiveItem(1);
+					}
+				}
 			}, {
-				xtype:"edittablegrid"
-				,ref:"../editTableGrid"
-				,limit:28
-				,api:{
-	            	read:editgrid.read
-	            	,create:editgrid.create
-	            	,update:editgrid.update
-	            	,destroy:editgrid.destroy
-	          	}
+				xtype:"browsingtree"
+				,ref:"browsingTree"
+				,region:"west"
+				,split:true
+				,margins:"4 0 4 4"
+		        ,width:250
 			}]
 			,listeners:{
-				tableselect:function() {
-					this.getLayout().setActiveItem(0);
-				}
-				,tableedit:function() {
-					this.getLayout().setActiveItem(1);
+				afterrender:function() {
+					this.cardLayer.relayEvents(this.browsingTree, ["tableselect"]);
+					this.cardLayer.relayEvents(this.browsingTree, ["tableedit"]);
+					this.tableGrid.relayEvents(this.browsingTree, ["tableselect"]);
+					this.editTableGrid.relayEvents(this.browsingTree, ["tableedit"]);
 				}
 			}
-		}, {
-			xtype:"browsingtree"
-			,ref:"browsingTree"
-			,region:"west"
-			,split:true
-			,margins:"4 0 4 4"
-	        ,width:250
-		}]
-		,listeners:{
-			afterrender:function() {
-				this.cardLayer.relayEvents(this.browsingTree, ["tableselect"]);
-				this.cardLayer.relayEvents(this.browsingTree, ["tableedit"]);
-				this.tableGrid.relayEvents(this.browsingTree, ["tableselect"]);
-				this.editTableGrid.relayEvents(this.browsingTree, ["tableedit"]);
-			}
-		}
-	});
+		});
+	}
+
+});
+
+
+Ext.onReady( function() {
+
+	new ExtMyAdmin.App();
 
 });

@@ -4,6 +4,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="stylesheet" type="text/css" href="/lib/ext/resources/css/ext-all.css" />
+		<link rel="stylesheet" type="text/css" href="static/css/ExtMyAdmin.Message.css" />
 		<link rel="stylesheet" type="text/css" href="static/css/style.css" />
 	</head>
 
@@ -37,6 +38,8 @@
 				}
 			};
 		</script>
+
+		<script type="text/javascript" src="static/js/ExtMyAdmin.Message.js"></script>
 
 		<script type="text/javascript" src="static/js/Ext.ux.DirectMetaGrid.js"></script>
 		<script type="text/javascript" src="static/js/ExtMyAdmin.TableGrid.js"></script>

@@ -1,0 +1,31 @@
+.ema-message {
+ 	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	-moz-box-shadow:1px 1px 6px #444444;
+	-webkit-box-shadow:1px 1px 6px #444444;
+	box-shadow:1px 1px 6px #444444;
+	border-style:solid;
+	border-width:2px;
+    float:right;
+    font-family:tahoma,arial,verdana,sans-serif;
+    font-size:12px;
+    font-weight:bold;
+    height:18px;
+    margin-right:5px;
+    margin-top:3px;
+    padding:6px 5px 4px;
+	visibility:hidden;
+}
+
+.ema-message.ema-message-info {
+	color:#EC7000;
+    background-color:#FFF0E1;
+	border-color:#EC7000;
+}
+
+.ema-message.ema-message-error {
+	color:#E10000;
+    background-color:#FFE3E3;
+	border-color:#E10000;
+}

@@ -28,6 +28,9 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
 						loader.baseParams.schema = "";
 					}
 				}
+				,loadexception:function() {
+					console.log("loadexception", this, arguments);
+				}
 			}
         });
 
@@ -48,6 +51,11 @@ ExtMyAdmin.BrowsingTree = Ext.extend(Ext.tree.TreePanel, {
         });
 
     }
+
+	,onRender:function() {
+		ExtMyAdmin.BrowsingTree.superclass.onRender.apply(this, arguments);
+		console.log("onRender", this, arguments);
+	}
 
     ,onNodeClick:function(node) {
         if (node.attributes.type === "table") {
